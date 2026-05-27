@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Piano — Matteo</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0c0c0a;--bg2:#131311;--bg3:#1a1a17;--bg4:#222220;--bg5:#2a2a27;
+  --b1:rgba(255,255,255,0.06);--b2:rgba(255,255,255,0.10);--b3:rgba(255,255,255,0.16);
+  --t1:#eae7de;--t2:#9a9790;--t3:#555350;
+  --g:#7ec98a;--gd:#1e3323;--ga:#b8dbbf;
+  --b:#6ba8d4;--bd:#1a2a38;--ba:#9dc5e0;
+  --a:#c8a03c;--ad:#2a2010;--aa:#d4b96a;
+  --r:#c06060;--rd:#2e1a1a;--ra:#d48080;
+  --tl:#4cb8a4;--tld:#152e28;--tla:#80cfc0;
+  --mono:'DM Mono',monospace;
+  --head:'Syne',sans-serif;
+  --rad:10px;--rad-s:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:14px;}
+body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden;}
+
+/* ── LAYOUT ── */
+.app{display:grid;grid-template-columns:200px 1fr;min-height:100vh;}
+
+/* ── SIDEBAR ── */
+.sidebar{background:var(--bg2);border-right:1px solid var(--b1);padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:0;}
+.sidebar-brand{padding:0 16px 20px;border-bottom:1px solid var(--b1);margin-bottom:12px;}
+.sidebar-brand .name{font-family:var(--head);font-size:15px;font-weight:600;color:var(--t1);letter-spacing:-0.01em;}
+.sidebar-brand .sub{font-size:10px;color:var(--t3);margin-top:2px;letter-spacing:0.04em;}
+.nav-group{padding:0 8px;margin-bottom:16px;}
+.nav-group-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--t3);padding:0 8px;margin-bottom:4px;}
+.nav-btn{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border-radius:var(--rad-s);border:none;background:transparent;color:var(--t2);font-family:var(--mono);font-size:11px;cursor:pointer;text-align:left;transition:all .15s;white-space:nowrap;}
+.nav-btn:hover{background:var(--bg3);color:var(--t1);}
+.nav-btn.active{background:var(--bg4);color:var(--t1);}
+.nav-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.sidebar-stats{margin-top:auto;padding:16px;border-top:1px solid var(--b1);font-size:10px;color:var(--t3);line-height:2;}
+.sidebar-stats strong{color:var(--t2);}
+
+/* ── MAIN ── */
+.main{padding:28px 32px;max-width:860px;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* ── PAGE HEADER ── */
+.ph{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--b1);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.ph h2{font-family:var(--head);font-size:22px;font-weight:500;letter-spacing:-0.02em;}
+.ph p{font-size:11px;color:var(--t3);margin-top:3px;}
+.save-pill{font-size:10px;padding:4px 12px;border-radius:40px;border:1px solid var(--b1);color:var(--t3);display:flex;align-items:center;gap:5px;transition:all .3s;white-space:nowrap;}
+.save-pill.saved{color:var(--g);border-color:var(--gd);}
+.save-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+
+/* ── DAY TABS ── */
+.day-tabs{display:flex;gap:5px;margin-bottom:20px;flex-wrap:wrap;}
+.dtab{font-family:var(--mono);font-size:10px;padding:5px 13px;border-radius:40px;border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;transition:all .15s;letter-spacing:0.02em;}
+.dtab:hover{color:var(--t1);border-color:var(--b3);}
+.dtab.active{background:var(--t1);color:var(--bg);border-color:var(--t1);}
+
+/* ── MACRO STRIP ── */
+.mstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;}
+.mcard{background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad);padding:12px 14px;text-align:center;}
+.mval{font-family:var(--head);font-size:21px;font-weight:500;display:block;line-height:1.1;}
+.mlbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;display:block;}
+
+/* ── MEAL CARD ── */
+.meal{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);margin-bottom:8px;overflow:hidden;transition:border-color .15s;}
+.meal:hover{border-color:var(--b2);}
+.meal.hi{border-color:rgba(126,201,138,0.2);}
+.meal-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none;}
+.meal-time{font-size:10px;color:var(--t3);min-width:76px;flex-shrink:0;}
+.meal-name{font-family:var(--head);font-size:13px;font-weight:500;flex:1;}
+.meal-kcal{font-size:11px;color:var(--t2);flex-shrink:0;}
+.badge{font-size:9px;padding:2px 8px;border-radius:40px;border:1px solid;flex-shrink:0;letter-spacing:0.03em;}
+.bg-g{color:var(--g);border-color:var(--gd);background:var(--gd);}
+.bg-t{color:var(--tl);border-color:var(--tld);background:var(--tld);}
+.bg-a{color:var(--a);border-color:var(--ad);background:var(--ad);}
+.bg-r{color:var(--r);border-color:var(--rd);background:var(--rd);}
+.bg-b{color:var(--b);border-color:var(--bd);background:var(--bd);}
+.arr{font-size:9px;color:var(--t3);transition:transform .2s;flex-shrink:0;}
+.arr.open{transform:rotate(90deg);}
+
+.meal-body{display:none;border-top:1px solid var(--b1);padding:14px;}
+.meal-body.open{display:block;}
+
+/* ── INGREDIENT ROW ── */
+.ingr-list{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;}
+.ingr{display:grid;grid-template-columns:1fr 60px 40px;align-items:center;gap:8px;padding:6px 10px;background:var(--bg3);border-radius:var(--rad-s);border:1px solid transparent;transition:border-color .15s;}
+.ingr:hover{border-color:var(--b1);}
+.ingr-name{font-size:12px;color:var(--t2);}
+.ingr-note{font-size:10px;color:var(--t3);}
+.ingr-g{width:100%;background:var(--bg4);border:1px solid var(--b1);border-radius:4px;padding:4px 6px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;text-align:right;transition:border-color .15s;-moz-appearance:textfield;}
+.ingr-g::-webkit-outer-spin-button,.ingr-g::-webkit-inner-spin-button{-webkit-appearance:none;}
+.ingr-g:focus{border-color:var(--b3);}
+.ingr-unit{font-size:10px;color:var(--t3);}
+
+.opt-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);margin-bottom:6px;margin-top:10px;}
+.opt-label:first-child{margin-top:0;}
+.opt-divider{border:none;border-top:1px solid var(--b1);margin:10px 0;}
+
+.meal-macro-row{display:flex;gap:12px;padding:8px 10px;background:var(--bg4);border-radius:var(--rad-s);font-size:11px;}
+.meal-macro-row span{color:var(--t3);}
+.meal-macro-row strong{color:var(--t1);}
+
+/* ── TOTAL BAR ── */
+.tot{background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad);padding:12px 16px;display:flex;gap:20px;flex-wrap:wrap;margin-top:6px;align-items:center;}
+.tot-item{font-size:11px;color:var(--t2);}
+.tot-item strong{color:var(--t1);font-size:14px;font-family:var(--head);}
+.tot-item.main strong{color:var(--g);font-size:16px;}
+
+/* ── INFO BOX ── */
+.ibox{border-radius:var(--rad);padding:11px 14px;font-size:11px;line-height:1.7;margin-bottom:12px;border-left:2px solid;}
+.ibox strong{color:var(--t1);}
+.ibox-g{background:var(--gd);border-color:var(--g);color:var(--ga);}
+.ibox-a{background:var(--ad);border-color:var(--a);color:var(--aa);}
+.ibox-b{background:var(--bd);border-color:var(--b);color:var(--ba);}
+.ibox-r{background:var(--rd);border-color:var(--r);color:var(--ra);}
+
+/* ── CUSTOM MEALS PAGE ── */
+.custom-meal-editor{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;margin-bottom:12px;}
+.cme-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--b1);}
+.cme-name-input{flex:1;background:transparent;border:none;outline:none;font-family:var(--head);font-size:13px;font-weight:500;color:var(--t1);}
+.cme-name-input::placeholder{color:var(--t3);}
+.cme-body{padding:14px;}
+.add-ingr-row{display:grid;grid-template-columns:1fr 70px 50px auto;gap:6px;align-items:center;margin-bottom:8px;}
+.add-ingr-row input,.add-ingr-row select{background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:6px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;width:100%;}
+.add-ingr-row input::placeholder{color:var(--t3);}
+.btn-sm{padding:6px 10px;border-radius:var(--rad-s);border:1px solid var(--b2);background:transparent;color:var(--t2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-sm:hover{background:var(--bg4);color:var(--t1);}
+.btn-sm.danger:hover{color:var(--r);border-color:var(--rd);}
+.btn-add-meal{width:100%;padding:11px;border-radius:var(--rad);border:1px dashed var(--b2);background:transparent;color:var(--t3);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .15s;margin-top:4px;}
+.btn-add-meal:hover{border-color:var(--b3);color:var(--t2);}
+.custom-ingr-row{display:grid;grid-template-columns:1fr 60px 40px 28px;gap:6px;align-items:center;padding:5px 8px;background:var(--bg3);border-radius:var(--rad-s);margin-bottom:3px;}
+.custom-ingr-row span{font-size:11px;color:var(--t2);}
+.del-ingr{background:transparent;border:none;color:var(--t3);font-size:14px;cursor:pointer;line-height:1;padding:0 2px;transition:color .15s;}
+.del-ingr:hover{color:var(--r);}
+
+/* ── FOOD DB PAGE ── */
+.db-table{width:100%;border-collapse:collapse;}
+.db-table th{text-align:left;padding:8px 10px;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--b1);font-weight:400;}
+.db-table td{padding:9px 10px;border-bottom:1px solid var(--b1);font-size:11px;color:var(--t2);}
+.db-table td:first-child{color:var(--t1);}
+.db-table tr:last-child td{border-bottom:none;}
+.db-table tr:hover td{background:var(--bg3);}
+.db-table input{width:52px;background:var(--bg3);border:1px solid var(--b1);border-radius:4px;padding:3px 6px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;text-align:right;-moz-appearance:textfield;}
+.db-table input::-webkit-outer-spin-button,.db-table input::-webkit-inner-spin-button{-webkit-appearance:none;}
+.db-table input:focus{border-color:var(--b3);}
+
+/* ── PROGRESS PAGE ── */
+.prog-entry{display:grid;grid-template-columns:110px 70px 65px 1fr 24px;gap:8px;align-items:center;padding:8px 12px;background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad-s);margin-bottom:6px;}
+.prog-entry input{background:var(--bg3);border:1px solid var(--b1);border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;width:100%;transition:border-color .15s;}
+.prog-entry input:focus{border-color:var(--b3);}
+.prog-entry input::placeholder{color:var(--t3);}
+.del-btn{background:transparent;border:none;color:var(--t3);font-size:15px;cursor:pointer;padding:0;line-height:1;transition:color .15s;}
+.del-btn:hover{color:var(--r);}
+.btn-add{width:100%;padding:10px;border-radius:var(--rad-s);border:1px dashed var(--b2);background:transparent;color:var(--t3);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .15s;margin-top:4px;}
+.btn-add:hover{border-color:var(--b3);color:var(--t2);}
+
+/* ── NOTE PAGE ── */
+.notepad{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;}
+.notepad-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--b1);}
+.notepad-bar span{font-size:10px;color:var(--t3);}
+.notepad textarea{width:100%;background:transparent;border:none;outline:none;font-family:var(--mono);font-size:12px;color:var(--t2);resize:none;padding:18px;min-height:320px;line-height:1.85;}
+.notepad textarea::placeholder{color:var(--t3);}
+
+/* ── CHECKLIST ── */
+.chk{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad-s);margin-bottom:5px;cursor:pointer;transition:all .15s;user-select:none;}
+.chk:hover{border-color:var(--b2);}
+.chk.done{opacity:.4;}
+.chk.done .chkbox{background:var(--g);border-color:var(--g);}
+.chkbox{width:15px;height:15px;border-radius:3px;border:1px solid var(--b2);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;}
+.chk-text{font-size:12px;flex:1;}
+.chk-sub{font-size:10px;color:var(--t3);margin-top:2px;}
+
+/* ── SECTION TITLE ── */
+.st{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--t3);margin:20px 0 8px;}
+
+/* ── PESI TABLE ── */
+.pesi-wrap{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;margin-bottom:16px;}
+.pesi-row{display:grid;grid-template-columns:140px 1fr 1fr 1fr;border-bottom:1px solid var(--b1);}
+.pesi-row:last-child{border-bottom:none;}
+.pesi-cell{padding:9px 12px;font-size:11px;color:var(--t2);}
+.pesi-row.head .pesi-cell{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--b2);}
+.pesi-row:not(.head):hover .pesi-cell{background:var(--bg3);}
+.pesi-cell:first-child{color:var(--t1);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:680px){
+  .app{grid-template-columns:1fr;}
+  .sidebar{position:static;height:auto;flex-direction:row;padding:10px 8px;overflow-x:auto;gap:4px;border-right:none;border-bottom:1px solid var(--b1);}
+  .sidebar-brand,.sidebar-stats,.nav-group-label{display:none;}
+  .nav-group{display:flex;gap:3px;padding:0;margin:0;}
+  .nav-btn{white-space:nowrap;font-size:10px;padding:6px 10px;}
+  .main{padding:16px;}
+  .mstrip{grid-template-columns:repeat(2,1fr);}
+  .prog-entry{grid-template-columns:90px 60px 55px 1fr 20px;}
+  .pesi-row{grid-template-columns:100px 1fr 1fr;}
+  .pesi-cell:last-child{display:none;}
+  .add-ingr-row{grid-template-columns:1fr 60px 44px auto;}
+  .custom-ingr-row{grid-template-columns:1fr 55px 36px 24px;}
+}
+@media(max-width:400px){
+  .mstrip{grid-template-columns:repeat(2,1fr);}
+  .prog-entry{grid-template-columns:1fr 1fr;gap:4px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="name">@teoswitch</div>
+    <div class="sub">piano nutrizionale v4</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Piano</div>
+    <button class="nav-btn active" onclick="goTo('piano',this)"><span class="nav-dot" style="background:var(--g)"></span>Piano pasti</button>
+    <button class="nav-btn" onclick="goTo('checklist',this)"><span class="nav-dot" style="background:var(--b)"></span>Checklist</button>
+    <button class="nav-btn" onclick="goTo('custom',this)"><span class="nav-dot" style="background:var(--tl)"></span>Pasti liberi</button>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">Dati</div>
+    <button class="nav-btn" onclick="goTo('fooddb',this)"><span class="nav-dot" style="background:var(--a)"></span>Alimenti</button>
+    <button class="nav-btn" onclick="goTo('pesi',this)"><span class="nav-dot" style="background:var(--tl)"></span>Guida pesi</button>
+    <button class="nav-btn" onclick="goTo('progress',this)"><span class="nav-dot" style="background:var(--a)"></span>Peso corporeo</button>
+    <button class="nav-btn" onclick="goTo('note',this)"><span class="nav-dot" style="background:var(--r)"></span>Note</button>
+  </div>
+  <div class="sidebar-stats">
+    <div>TDEE <strong>~2700 kcal</strong></div>
+    <div>WO target <strong>~2050 kcal</strong></div>
+    <div>Riposo target <strong>~1650 kcal</strong></div>
+    <div style="margin-top:6px;">Proteine <strong>~190g/die</strong></div>
+    <div>Peso attuale <strong id="sidebar-peso">93 kg</strong></div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+
+<!-- ══════════════════════════════
+     PAGE: PIANO PASTI
+════════════════════════════════ -->
+<div class="page active" id="page-piano">
+  <div class="ph">
+    <div><h2>Piano pasti</h2><p>grammi modificabili · macro calcolati in tempo reale</p></div>
+    <div class="save-pill" id="save-pill"><span class="save-dot"></span>salvato</div>
+  </div>
+
+  <div class="day-tabs">
+    <button class="dtab active" onclick="showDay('lun',this)">Lun/Mar — WO 14:00</button>
+    <button class="dtab" onclick="showDay('gio',this)">Gio — WO 11:00</button>
+    <button class="dtab" onclick="showDay('rest',this)">Riposo / Padel</button>
+  </div>
+
+  <!-- ── LUNEDÌ / MARTEDÌ ── -->
+  <div id="day-lun">
+    <div class="mstrip">
+      <div class="mcard"><span class="mval" style="color:var(--g)" id="lun-kcal">—</span><span class="mlbl">kcal totali</span></div>
+      <div class="mcard"><span class="mval" style="color:var(--b)" id="lun-p">—</span><span class="mlbl">proteine g</span></div>
+      <div class="mcard"><span class="mval" style="color:var(--a)" id="lun-c">—</span><span class="mlbl">carbs g</span></div>
+      <div class="mcard"><span class="mval" style="color:var(--r)" id="lun-f">—</span><span class="mlbl">grassi g</span></div>
+    </div>
+
+    <!-- Pre-wo -->
+    <div class="meal">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">~13:30</span>
+        <span class="meal-name">Pre-workout</span>
+        <span class="badge bg-a">opzionale</span>
+        <span class="meal-kcal" id="lun-m1-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <div class="ingr-list" data-meal="lun-m1" data-day="lun">
+          <div class="ingr" data-food="amaretti" data-type="pz">
+            <div><div class="ingr-name">Amaretti</div><div class="ingr-note">~80 kcal cad.</div></div>
+            <input type="number" class="ingr-g" value="2" min="0" max="10" step="1" onchange="calcAll()">
+            <span class="ingr-unit">pz</span>
+          </div>
+        </div>
+        <div class="meal-macro-row" id="lun-m1-macros">
+          <span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Post-wo -->
+    <div class="meal hi">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">Post WO ~15:30</span>
+        <span class="meal-name">Post-workout</span>
+        <span class="badge bg-t">invariato ✓</span>
+        <span class="meal-kcal" id="lun-m2-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <div class="ingr-list" data-meal="lun-m2" data-day="lun">
+          <div class="ingr" data-food="crema-riso"><div><div class="ingr-name">Crema di riso</div><div class="ingr-note">pesare a secco</div></div><input type="number" class="ingr-g" value="40" min="0" max="150" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="whey"><div><div class="ingr-name">Whey protein</div><div class="ingr-note">pesare a secco</div></div><input type="number" class="ingr-g" value="40" min="0" max="100" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="miele"><div><div class="ingr-name">Miele</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="soia-gran"><div><div class="ingr-name">Granulare di soia</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+        </div>
+        <div class="meal-macro-row" id="lun-m2-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
+      </div>
+    </div>
+
+    <!-- Cena -->
+    <div class="meal">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">~20:00</span>
+        <span class="meal-name">Cena</span>
+        <span class="badge bg-g">principale</span>
+        <span class="meal-kcal" id="lun-m3-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <p class="opt-label">Scegli la combinazione che vuoi — modifica i grammi a 0 per escludere</p>
+        <div class="ingr-list" data-meal="lun-m3" data-day="lun">
+          <div class="ingr" data-food="pollo"><div><div class="ingr-name">Petto di pollo</div><div class="ingr-note">crudo → ×0.77 cotto forno</div></div><input type="number" class="ingr-g" value="200" min="0" max="400" onchange="calcAll()"><span class="ingr-unit">g cr.</span></div>
+          <div class="ingr" data-food="riso"><div><div class="ingr-name">Riso basmati</div><div class="ingr-note">crudo → ×2.5 cotto</div></div><input type="number" class="ingr-g" value="80" min="0" max="200" onchange="calcAll()"><span class="ingr-unit">g cr.</span></div>
+          <div class="ingr" data-food="patate"><div><div class="ingr-name">Patate</div><div class="ingr-note">crude → ×0.93 lessate</div></div><input type="number" class="ingr-g" value="0" min="0" max="500" onchange="calcAll()"><span class="ingr-unit">g cr.</span></div>
+          <div class="ingr" data-food="tonno"><div><div class="ingr-name">Tonno al naturale</div><div class="ingr-note">sgocciolato</div></div><input type="number" class="ingr-g" value="0" min="0" max="320" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="uova"><div><div class="ingr-name">Uova intere</div></div><input type="number" class="ingr-g" value="0" min="0" max="8" step="1" onchange="calcAll()"><span class="ingr-unit">pz</span></div>
+          <div class="ingr" data-food="albume"><div><div class="ingr-name">Albumi</div></div><input type="number" class="ingr-g" value="0" min="0" max="8" step="1" onchange="calcAll()"><span class="ingr-unit">pz</span></div>
+          <div class="ingr" data-food="ceci"><div><div class="ingr-name">Ceci (sgocciolati)</div></div><input type="number" class="ingr-g" value="0" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="verdure"><div><div class="ingr-name">Verdure miste</div><div class="ingr-note">spinaci/zucchine/broccoli</div></div><input type="number" class="ingr-g" value="200" min="0" max="500" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="olio-evo"><div><div class="ingr-name">Olio EVO</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="grana"><div><div class="ingr-name">Grana Padano</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+        </div>
+        <div class="meal-macro-row" id="lun-m3-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
+      </div>
+    </div>
+
+    <!-- Pre-nanna -->
+    <div class="meal hi">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">~22:30</span>
+        <span class="meal-name">Pre-nanna</span>
+        <span class="badge bg-r">anti-catabolismo</span>
+        <span class="meal-kcal" id="lun-m4-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <div class="ingr-list" data-meal="lun-m4" data-day="lun">
+          <div class="ingr" data-food="skyr"><div><div class="ingr-name">Skyr 0%</div></div><input type="number" class="ingr-g" value="150" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="fage"><div><div class="ingr-name">Fage 0%</div></div><input type="number" class="ingr-g" value="150" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="miele"><div><div class="ingr-name">Miele</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="pistacchi"><div><div class="ingr-name">Granella pistacchi</div></div><input type="number" class="ingr-g" value="5" min="0" max="20" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="uvetta"><div><div class="ingr-name">Uvetta</div></div><input type="number" class="ingr-g" value="8" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="cacao"><div><div class="ingr-name">Cacao amaro + caffè sol.</div><div class="ingr-note">trascurabili — lascia 0</div></div><input type="number" class="ingr-g" value="0" min="0" max="10" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+        </div>
+        <div class="meal-macro-row" id="lun-m4-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
+      </div>
+    </div>
+
+    <div class="tot">
+      <div class="tot-item main"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Totale giorno</div><strong id="lun-tot-kcal">—</strong> kcal</div>
+      <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Proteine</div><strong id="lun-tot-p">—</strong>g</div>
+      <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Carbs</div><strong id="lun-tot-c">—</strong>g</div>
+      <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Grassi</div><strong id="lun-tot-f">—</strong>g</div>
+      <div class="tot-item" style="margin-left:auto;"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Target</div><strong>2050</strong> kcal</div>
+    </div>
+  </div>
+
+  <!-- ── GIOVEDÌ ── -->
+  <div id="day-gio" style="display:none">
+    <div class="mstrip">
+      <div class="mcard"><span class="mval" style="color:var(--g)" id="gio-kcal">—</span><span class="mlbl">kcal totali</span></div>
+      <div class="mcard"><span class="mval" style="color:var(--b)" id="gio-p">—</span><span class="mlbl">proteine g</span></div>
+      <div class="mcard"><span class="mval" style="color:var(--a)" id="gio-c">—</span><span class="mlbl">carbs g</span></div>
+      <div class="mcard"><span class="mval" style="color:var(--r)" id="gio-f">—</span><span class="mlbl">grassi g</span></div>
+    </div>
+
+    <div class="meal hi">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">Post WO ~12:30</span>
+        <span class="meal-name">Post-workout</span>
+        <span class="badge bg-t">invariato ✓</span>
+        <span class="meal-kcal" id="gio-m1-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <div class="ingr-list" data-meal="gio-m1" data-day="gio">
+          <div class="ingr" data-food="crema-riso"><div><div class="ingr-name">Crema di riso</div></div><input type="number" class="ingr-g" value="40" min="0" max="150" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="whey"><div><div class="ingr-name">Whey protein</div></div><input type="number" class="ingr-g" value="40" min="0" max="100" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="miele"><div><div class="ingr-name">Miele</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="soia-gran"><div><div class="ingr-name">Granulare di soia</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+        </div>
+        <div class="ingr-note" style="margin:6px 0 2px;font-size:10px;color:var(--t3);">Ti basta fino alle 18 — non forzare nulla.</div>
+        <div class="meal-macro-row" id="gio-m1-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
+      </div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">~18:00</span>
+        <span class="meal-name">Spuntino pomeridiano</span>
+        <span class="badge bg-a">solo se hai fame</span>
+        <span class="meal-kcal" id="gio-m2-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <div class="ingr-list" data-meal="gio-m2" data-day="gio">
+          <div class="ingr" data-food="rice-pudding"><div><div class="ingr-name">Rice pudding Lidl</div><div class="ingr-note">vasetto da 200g</div></div><input type="number" class="ingr-g" value="200" min="0" max="400" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="fage"><div><div class="ingr-name">Fage 0%</div><div class="ingr-note">alternativa al pudding</div></div><input type="number" class="ingr-g" value="0" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="bda"><div><div class="ingr-name">Burro d'arachidi</div></div><input type="number" class="ingr-g" value="0" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="pera"><div><div class="ingr-name">Pera</div></div><input type="number" class="ingr-g" value="0" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="mozz-hp"><div><div class="ingr-name">Mozzarella high protein Lidl</div></div><input type="number" class="ingr-g" value="0" min="0" max="200" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+        </div>
+        <div class="meal-macro-row" id="gio-m2-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
+      </div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">~20:00</span>
+        <span class="meal-name">Cena</span>
+        <span class="badge bg-g">principale</span>
+        <span class="meal-kcal" id="gio-m3-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <div class="ingr-list" data-meal="gio-m3" data-day="gio">
+          <div class="ingr" data-food="pollo"><div><div class="ingr-name">Petto di pollo</div><div class="ingr-note">crudo → ×0.77 cotto</div></div><input type="number" class="ingr-g" value="200" min="0" max="400" onchange="calcAll()"><span class="ingr-unit">g cr.</span></div>
+          <div class="ingr" data-food="riso"><div><div class="ingr-name">Riso basmati</div><div class="ingr-note">crudo → ×2.5 cotto</div></div><input type="number" class="ingr-g" value="80" min="0" max="200" onchange="calcAll()"><span class="ingr-unit">g cr.</span></div>
+          <div class="ingr" data-food="patate"><div><div class="ingr-name">Patate</div><div class="ingr-note">crude → ×0.93 lessate</div></div><input type="number" class="ingr-g" value="0" min="0" max="500" onchange="calcAll()"><span class="ingr-unit">g cr.</span></div>
+          <div class="ingr" data-food="uova"><div><div class="ingr-name">Uova intere</div></div><input type="number" class="ingr-g" value="0" min="0" max="8" step="1" onchange="calcAll()"><span class="ingr-unit">pz</span></div>
+          <div class="ingr" data-food="albume"><div><div class="ingr-name">Albumi</div></div><input type="number" class="ingr-g" value="0" min="0" max="8" step="1" onchange="calcAll()"><span class="ingr-unit">pz</span></div>
+          <div class="ingr" data-food="verdure"><div><div class="ingr-name">Verdure miste</div></div><input type="number" class="ingr-g" value="200" min="0" max="500" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="olio-evo"><div><div class="ingr-name">Olio EVO</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+        </div>
+        <div class="meal-macro-row" id="gio-m3-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
+      </div>
+    </div>
+
+    <div class="meal hi">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">~22:30</span>
+        <span class="meal-name">Pre-nanna</span>
+        <span class="badge bg-r">anti-catabolismo</span>
+        <span class="meal-kcal" id="gio-m4-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <div class="ingr-list" data-meal="gio-m4" data-day="gio">
+          <div class="ingr" data-food="skyr"><div><div class="ingr-name">Skyr 0%</div></div><input type="number" class="ingr-g" value="150" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="fage"><div><div class="ingr-name">Fage 0%</div></div><input type="number" class="ingr-g" value="150" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="miele"><div><div class="ingr-name">Miele</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="pistacchi"><div><div class="ingr-name">Granella pistacchi</div></div><input type="number" class="ingr-g" value="5" min="0" max="20" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="uvetta"><div><div class="ingr-name">Uvetta</div></div><input type="number" class="ingr-g" value="8" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+        </div>
+        <div class="meal-macro-row" id="gio-m4-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
+      </div>
+    </div>
+
+    <div class="tot">
+      <div class="tot-item main"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Totale giorno</div><strong id="gio-tot-kcal">—</strong> kcal</div>
+      <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Proteine</div><strong id="gio-tot-p">—</strong>g</div>
+      <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Carbs</div><strong id="gio-tot-c">—</strong>g</div>
+      <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Grassi</div><strong id="gio-tot-f">—</strong>g</div>
+      <div class="tot-item" style="margin-left:auto;"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Target</div><strong>2050</strong> kcal</div>
+    </div>
+  </div>
+
+  <!-- ── RIPOSO ── -->
+  <div id="day-rest" style="display:none">
+    <div class="ibox ibox-b" style="margin-bottom:16px;"><strong>Logica giorni riposo:</strong> calorie concentrate sulla cena. Pranzo opzionale o saltato. Deficit −1050 kcal per compensare il weekend libero.</div>
+    <div class="mstrip">
+      <div class="mcard"><span class="mval" style="color:var(--a)" id="rest-kcal">—</span><span class="mlbl">kcal totali</span></div>
+      <div class="mcard"><span class="mval" style="color:var(--b)" id="rest-p">—</span><span class="mlbl">proteine g</span></div>
+      <div class="mcard"><span class="mval" style="color:var(--a)" id="rest-c">—</span><span class="mlbl">carbs g</span></div>
+      <div class="mcard"><span class="mval" style="color:var(--r)" id="rest-f">—</span><span class="mlbl">grassi g</span></div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">~12:30</span>
+        <span class="meal-name">Pranzo</span>
+        <span class="badge bg-a">opzionale</span>
+        <span class="meal-kcal" id="rest-m1-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <div class="ingr-list" data-meal="rest-m1" data-day="rest">
+          <div class="ingr" data-food="skyr"><div><div class="ingr-name">Skyr 0% / Fage 0%</div><div class="ingr-note">o salta completamente</div></div><input type="number" class="ingr-g" value="200" min="0" max="400" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="rice-pudding"><div><div class="ingr-name">Rice pudding Lidl</div></div><input type="number" class="ingr-g" value="0" min="0" max="400" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="tonno"><div><div class="ingr-name">Tonno al naturale</div></div><input type="number" class="ingr-g" value="0" min="0" max="320" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="pera"><div><div class="ingr-name">Pera</div></div><input type="number" class="ingr-g" value="150" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+        </div>
+        <div class="meal-macro-row" id="rest-m1-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
+      </div>
+    </div>
+
+    <div class="meal">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">~20:00</span>
+        <span class="meal-name">Cena</span>
+        <span class="badge bg-g">pasto principale</span>
+        <span class="meal-kcal" id="rest-m2-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <div class="ingr-list" data-meal="rest-m2" data-day="rest">
+          <div class="ingr" data-food="pollo"><div><div class="ingr-name">Petto di pollo</div><div class="ingr-note">crudo → ×0.77 cotto</div></div><input type="number" class="ingr-g" value="220" min="0" max="400" onchange="calcAll()"><span class="ingr-unit">g cr.</span></div>
+          <div class="ingr" data-food="riso"><div><div class="ingr-name">Riso basmati</div><div class="ingr-note">crudo → ×2.5 cotto</div></div><input type="number" class="ingr-g" value="90" min="0" max="200" onchange="calcAll()"><span class="ingr-unit">g cr.</span></div>
+          <div class="ingr" data-food="patate"><div><div class="ingr-name">Patate</div><div class="ingr-note">crude → ×0.93 lessate</div></div><input type="number" class="ingr-g" value="0" min="0" max="500" onchange="calcAll()"><span class="ingr-unit">g cr.</span></div>
+          <div class="ingr" data-food="tonno"><div><div class="ingr-name">Tonno al naturale</div></div><input type="number" class="ingr-g" value="0" min="0" max="320" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="uova"><div><div class="ingr-name">Uova intere</div></div><input type="number" class="ingr-g" value="0" min="0" max="8" step="1" onchange="calcAll()"><span class="ingr-unit">pz</span></div>
+          <div class="ingr" data-food="albume"><div><div class="ingr-name">Albumi</div></div><input type="number" class="ingr-g" value="0" min="0" max="8" step="1" onchange="calcAll()"><span class="ingr-unit">pz</span></div>
+          <div class="ingr" data-food="ceci"><div><div class="ingr-name">Ceci (sgocciolati)</div></div><input type="number" class="ingr-g" value="0" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="verdure"><div><div class="ingr-name">Verdure miste</div></div><input type="number" class="ingr-g" value="200" min="0" max="500" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="olio-evo"><div><div class="ingr-name">Olio EVO</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+        </div>
+        <div class="meal-macro-row" id="rest-m2-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
+      </div>
+    </div>
+
+    <div class="meal hi">
+      <div class="meal-head" onclick="toggleMeal(this)">
+        <span class="meal-time">~22:30</span>
+        <span class="meal-name">Pre-nanna</span>
+        <span class="badge bg-r">anti-catabolismo</span>
+        <span class="meal-kcal" id="rest-m3-kcal">— kcal</span>
+        <span class="arr">▶</span>
+      </div>
+      <div class="meal-body">
+        <div class="ingr-list" data-meal="rest-m3" data-day="rest">
+          <div class="ingr" data-food="skyr"><div><div class="ingr-name">Skyr 0%</div></div><input type="number" class="ingr-g" value="150" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="fage"><div><div class="ingr-name">Fage 0%</div></div><input type="number" class="ingr-g" value="150" min="0" max="300" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="miele"><div><div class="ingr-name">Miele</div></div><input type="number" class="ingr-g" value="10" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="pistacchi"><div><div class="ingr-name">Granella pistacchi</div></div><input type="number" class="ingr-g" value="5" min="0" max="20" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+          <div class="ingr" data-food="uvetta"><div><div class="ingr-name">Uvetta</div></div><input type="number" class="ingr-g" value="8" min="0" max="30" onchange="calcAll()"><span class="ingr-unit">g</span></div>
+        </div>
+        <div class="meal-macro-row" id="rest-m3-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
+      </div>
+    </div>
+
+    <div class="tot">
+      <div class="tot-item main"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Totale giorno</div><strong id="rest-tot-kcal">—</strong> kcal</div>
+      <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Proteine</div><strong id="rest-tot-p">—</strong>g</div>
+      <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Carbs</div><strong id="rest-tot-c">—</strong>g</div>
+      <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Grassi</div><strong id="rest-tot-f">—</strong>g</div>
+      <div class="tot-item" style="margin-left:auto;"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Target</div><strong>1650</strong> kcal</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     PAGE: CHECKLIST
+════════════════════════════════ -->
+<div class="page" id="page-checklist">
+  <div class="ph">
+    <div><h2>Checklist</h2><p>spunta i pasti durante la giornata</p></div>
+    <button class="btn-sm" onclick="resetChecks()">↺ reset</button>
+  </div>
+  <div class="day-tabs">
+    <button class="dtab active" onclick="showCheckDay('cwo14',this)">WO ore 14</button>
+    <button class="dtab" onclick="showCheckDay('cwo11',this)">WO ore 11</button>
+    <button class="dtab" onclick="showCheckDay('criposo',this)">Riposo</button>
+  </div>
+  <div id="cwo14">
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Pre-workout ~13:30<div class="chk-sub">2 amaretti · ~160 kcal</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Post-workout ~15:30<div class="chk-sub">crema riso + whey + miele + soia · ~450 kcal</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Cena ~20:00<div class="chk-sub">proteina + carbs + verdure + olio</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Pre-nanna ~22:30<div class="chk-sub">150g Skyr + 150g Fage + miele + pistacchi + uvette · ~290 kcal</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Acqua 3–3.5 L<div class="chk-sub">+500 ml per ora di allenamento</div></div></div>
+  </div>
+  <div id="cwo11" style="display:none">
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Post-workout ~12:30<div class="chk-sub">crema riso + whey + miele + soia · basta fino alle 18</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Spuntino ~18:00 (opzionale)<div class="chk-sub">rice pudding / yogurt+BdA / mozzarella HP</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Cena ~20:00<div class="chk-sub">proteina + carbs + verdure + olio</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Pre-nanna ~22:30<div class="chk-sub">150g Skyr + 150g Fage + miele + pistacchi + uvette</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Acqua 3–3.5 L</div></div>
+  </div>
+  <div id="criposo" style="display:none">
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Pranzo ~12:30 (opzionale)<div class="chk-sub">yogurt / pudding / tonno / salta</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Cena ~20:00<div class="chk-sub">proteina + carbs + verdure · ~820-900 kcal</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Pre-nanna ~22:30<div class="chk-sub">150g Skyr + 150g Fage + miele + pistacchi + uvette</div></div></div>
+    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Acqua 2.5–3 L<div class="chk-sub">+500 ml se padel</div></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     PAGE: PASTI LIBERI / CUSTOM
+════════════════════════════════ -->
+<div class="page" id="page-custom">
+  <div class="ph"><div><h2>Pasti liberi</h2><p>crea combinazioni personalizzate con calcolo macro automatico</p></div></div>
+  <div class="ibox ibox-g">Usa questa sezione quando ti stai stancando dei soliti pasti o vuoi provare combinazioni nuove. Aggiungi gli ingredienti dal database e i macro si calcolano in automatico.</div>
+  <div id="custom-meals-list"></div>
+  <button class="btn-add-meal" onclick="addCustomMeal()">+ nuovo pasto personalizzato</button>
+</div>
+
+<!-- ══════════════════════════════
+     PAGE: DATABASE ALIMENTI
+════════════════════════════════ -->
+<div class="page" id="page-fooddb">
+  <div class="ph"><div><h2>Alimenti</h2><p>valori per 100g (o per unità dove indicato) · modificabili</p></div></div>
+  <div class="ibox ibox-a">Puoi modificare i valori se hai i dati precisi del prodotto che usi (es. la whey che compri tu). I valori vengono usati per tutti i calcoli.</div>
+  <div style="background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;">
+    <table class="db-table" id="food-db-table">
+      <thead><tr><th>Alimento</th><th>Unità</th><th>Kcal</th><th>Proteine</th><th>Carbs</th><th>Grassi</th></tr></thead>
+      <tbody id="db-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     PAGE: GUIDA PESI
+════════════════════════════════ -->
+<div class="page" id="page-pesi">
+  <div class="ph"><div><h2>Guida pesi</h2><p>crudo vs cotto — per pesare in batch con la morosa</p></div></div>
+  <div class="ibox ibox-g"><strong>Batch cooking:</strong> cuoci tutto insieme e pesa il cotto. Dividi per porzioni. Es: 600g pollo crudo → ~462g cotti → 3 porzioni da ~154g cotti.</div>
+  <div class="pesi-wrap">
+    <div class="pesi-row head"><div class="pesi-cell">Alimento</div><div class="pesi-cell">Crudo</div><div class="pesi-cell">Lessato</div><div class="pesi-cell">Forno/Piastra</div></div>
+    <div class="pesi-row"><div class="pesi-cell">Petto di pollo</div><div class="pesi-cell">200g</div><div class="pesi-cell">~165g</div><div class="pesi-cell">~154g</div></div>
+    <div class="pesi-row"><div class="pesi-cell">Petto di pollo</div><div class="pesi-cell">220g</div><div class="pesi-cell">~182g</div><div class="pesi-cell">~170g</div></div>
+    <div class="pesi-row"><div class="pesi-cell">Tacchino fesa</div><div class="pesi-cell">200g</div><div class="pesi-cell">~170g</div><div class="pesi-cell">~160g</div></div>
+    <div class="pesi-row"><div class="pesi-cell">Riso basmati</div><div class="pesi-cell">80g</div><div class="pesi-cell">~200g</div><div class="pesi-cell">—</div></div>
+    <div class="pesi-row"><div class="pesi-cell">Riso basmati</div><div class="pesi-cell">90g</div><div class="pesi-cell">~225g</div><div class="pesi-cell">—</div></div>
+    <div class="pesi-row"><div class="pesi-cell">Patate</div><div class="pesi-cell">300g</div><div class="pesi-cell">~280g</div><div class="pesi-cell">~255g</div></div>
+    <div class="pesi-row"><div class="pesi-cell">Patate</div><div class="pesi-cell">350g</div><div class="pesi-cell">~326g</div><div class="pesi-cell">~298g</div></div>
+    <div class="pesi-row"><div class="pesi-cell">Spinaci surgelati</div><div class="pesi-cell" colspan="3">Pesali surgelati — cambiano poco</div></div>
+    <div class="pesi-row"><div class="pesi-cell">Ceci (vasetto)</div><div class="pesi-cell" colspan="3">Sgocciolati — pesali così</div></div>
+    <div class="pesi-row"><div class="pesi-cell">Tonno</div><div class="pesi-cell" colspan="3">Scatoletta 160g netta sgocciolata</div></div>
+  </div>
+  <p class="st">Alimenti speciali</p>
+  <div class="ibox ibox-g"><strong>Grana Padano:</strong> 10-15g sulla cena come aroma — non eliminarlo.</div>
+  <div class="ibox ibox-g"><strong>Burro d'arachidi:</strong> 10g con lo yogurt pomeridiano — grassi buoni + sazietà.</div>
+  <div class="ibox ibox-g"><strong>Cioccolato fondente 95%:</strong> 10-15g a fine cena — magnesio + polifenoli, pochissime kcal.</div>
+  <div class="ibox ibox-a"><strong>Rice pudding Lidl:</strong> ottimo spuntino pomeridiano nei giorni WO. Meno indicato la sera nei giorni riposo.</div>
+</div>
+
+<!-- ══════════════════════════════
+     PAGE: PESO CORPOREO
+════════════════════════════════ -->
+<div class="page" id="page-progress">
+  <div class="ph"><div><h2>Peso corporeo</h2><p>ogni 7-10 giorni · mattino · stomaco vuoto</p></div></div>
+  <div class="ibox ibox-a"><strong>Regola revisione:</strong> se dopo 3 settimane il peso non si muove, togli 100-150 kcal dai carbs della cena nei giorni di riposo.</div>
+  <div style="display:grid;grid-template-columns:110px 70px 65px 1fr 24px;gap:8px;padding:6px 12px;border-bottom:1px solid var(--b1);margin-bottom:4px;">
+    <span style="font-size:9px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;">Data</span>
+    <span style="font-size:9px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;">Peso kg</span>
+    <span style="font-size:9px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;">BF% est.</span>
+    <span style="font-size:9px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;">Note</span>
+    <span></span>
+  </div>
+  <div id="prog-list"></div>
+  <button class="btn-add" onclick="addProgEntry()">+ aggiungi misurazione</button>
+</div>
+
+<!-- ══════════════════════════════
+     PAGE: NOTE
+════════════════════════════════ -->
+<div class="page" id="page-note">
+  <div class="ph"><div><h2>Note</h2><p>sensazioni, aggiustamenti, idee — salvato automaticamente</p></div></div>
+  <div class="notepad">
+    <div class="notepad-bar"><span>blocco note</span><span id="note-chars">0 car.</span></div>
+    <textarea id="main-note" placeholder="Scrivi qui — come ti senti, sostituzioni provate, giorni particolari, idee..." onblur="triggerSave()" oninput="updateChars()"></textarea>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// FOOD DATABASE (kcal, p, c, f per 100g o per unità)
+// ═══════════════════════════════════════
+const defaultFoods = {
+  'pollo':       {name:'Petto di pollo (crudo)',  unit:'g',  kcal:110, p:23.0, c:0.0, f:1.8},
+  'tacchino':    {name:'Tacchino fesa (crudo)',   unit:'g',  kcal:107, p:23.5, c:0.0, f:1.5},
+  'tonno':       {name:'Tonno al naturale',        unit:'g',  kcal:86,  p:19.0, c:0.0, f:1.0},
+  'uova':        {name:'Uovo intero',              unit:'pz', kcal:70,  p:6.0,  c:0.4, f:4.8},
+  'albume':      {name:'Albume',                   unit:'pz', kcal:17,  p:3.6,  c:0.2, f:0.1},
+  'riso':        {name:'Riso basmati (crudo)',     unit:'g',  kcal:356, p:7.5,  c:77.0,f:0.5},
+  'patate':      {name:'Patate (crude)',            unit:'g',  kcal:77,  p:2.0,  c:17.0,f:0.1},
+  'crema-riso':  {name:'Crema di riso',            unit:'g',  kcal:369, p:7.0,  c:81.0,f:1.0},
+  'whey':        {name:'Whey protein',             unit:'g',  kcal:380, p:75.0, c:8.0, f:5.0},
+  'skyr':        {name:'Skyr 0%',                  unit:'g',  kcal:57,  p:11.0, c:4.0, f:0.2},
+  'fage':        {name:'Fage 0%',                  unit:'g',  kcal:54,  p:10.0, c:3.8, f:0.2},
+  'fiocchi-latte':{name:'Fiocchi di latte',        unit:'g',  kcal:97,  p:11.5, c:3.5, f:4.0},
+  'rice-pudding':{name:'Rice pudding Lidl',        unit:'g',  kcal:97,  p:3.2,  c:16.5,f:2.2},
+  'mozz-hp':     {name:'Mozzarella high protein Lidl',unit:'g',kcal:88, p:14.0, c:2.0, f:2.5},
+  'form-spalm':  {name:'Formaggio spalmabile Lidl',unit:'g',  kcal:135, p:8.0,  c:3.5, f:10.0},
+  'ceci':        {name:'Ceci (sgocciolati)',        unit:'g',  kcal:121, p:7.2,  c:17.5,f:2.4},
+  'verdure':     {name:'Verdure miste',             unit:'g',  kcal:22,  p:2.0,  c:3.0, f:0.3},
+  'spinaci':     {name:'Spinaci surgelati',         unit:'g',  kcal:23,  p:2.8,  c:2.0, f:0.4},
+  'olio-evo':    {name:'Olio EVO',                 unit:'g',  kcal:884, p:0.0,  c:0.0, f:99.9},
+  'bda':         {name:'Burro d\'arachidi',         unit:'g',  kcal:598, p:25.0, c:20.0,f:51.0},
+  'miele':       {name:'Miele',                    unit:'g',  kcal:304, p:0.3,  c:80.0,f:0.0},
+  'soia-gran':   {name:'Granulare di soia',         unit:'g',  kcal:337, p:50.0, c:28.0,f:2.5},
+  'pistacchi':   {name:'Granella pistacchi',        unit:'g',  kcal:560, p:20.0, c:28.0,f:44.0},
+  'uvetta':      {name:'Uvetta',                   unit:'g',  kcal:296, p:2.5,  c:73.0,f:0.4},
+  'pera':        {name:'Pera',                     unit:'g',  kcal:57,  p:0.4,  c:13.5,f:0.1},
+  'grana':       {name:'Grana Padano',              unit:'g',  kcal:384, p:33.0, c:0.0, f:28.0},
+  'cioccolato':  {name:'Cioccolato fondente 95%',  unit:'g',  kcal:566, p:12.0, c:18.0,f:49.0},
+  'latte-scr':   {name:'Latte scremato',           unit:'g',  kcal:33,  p:3.3,  c:5.0, f:0.1},
+  'amaretti':    {name:'Amaretti',                 unit:'pz', kcal:80,  p:2.0,  c:14.0,f:2.5},
+  'cacao':       {name:'Cacao amaro / caffè sol.', unit:'g',  kcal:12,  p:1.0,  c:1.5, f:0.5},
+};
+
+let foods = JSON.parse(localStorage.getItem('foods_v4') || 'null') || JSON.parse(JSON.stringify(defaultFoods));
+
+// ═══════════════════════════════════════
+// MACRO CALC
+// ═══════════════════════════════════════
+function getMacros(foodKey, qty) {
+  const f = foods[foodKey];
+  if (!f || !qty || isNaN(qty)) return {kcal:0,p:0,c:0,f:0};
+  const mult = f.unit === 'pz' ? qty : qty / 100;
+  return {
+    kcal: f.kcal * mult,
+    p:    f.p    * mult,
+    c:    f.c    * mult,
+    f:    f.f    * mult
+  };
+}
+
+function calcMealMacros(listEl) {
+  let tot = {kcal:0,p:0,c:0,f:0};
+  listEl.querySelectorAll('.ingr').forEach(ingr => {
+    const fk = ingr.dataset.food;
+    const qty = parseFloat(ingr.querySelector('.ingr-g').value) || 0;
+    const m = getMacros(fk, qty);
+    tot.kcal += m.kcal; tot.p += m.p; tot.c += m.c; tot.f += m.f;
+  });
+  return tot;
+}
+
+function r(n) { return Math.round(n); }
+function r1(n) { return Math.round(n * 10) / 10; }
+
+function updateMealUI(mealId, macros) {
+  const kcalEl = document.getElementById(mealId + '-kcal');
+  const macroEl = document.getElementById(mealId + '-macros');
+  if (kcalEl) kcalEl.textContent = r(macros.kcal) + ' kcal';
+  if (macroEl) {
+    const spans = macroEl.querySelectorAll('strong');
+    if (spans[0]) spans[0].textContent = r1(macros.p) + 'g';
+    if (spans[1]) spans[1].textContent = r1(macros.c) + 'g';
+    if (spans[2]) spans[2].textContent = r1(macros.f) + 'g';
+  }
+}
+
+function calcDay(day) {
+  let dayTot = {kcal:0,p:0,c:0,f:0};
+  document.querySelectorAll(`[data-day="${day}"]`).forEach(list => {
+    const mealId = list.dataset.meal;
+    const m = calcMealMacros(list);
+    updateMealUI(mealId, m);
+    dayTot.kcal += m.kcal; dayTot.p += m.p; dayTot.c += m.c; dayTot.f += m.f;
+  });
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set(day+'-kcal', r(dayTot.kcal));
+  set(day+'-p', r1(dayTot.p));
+  set(day+'-c', r1(dayTot.c));
+  set(day+'-f', r1(dayTot.f));
+  set(day+'-tot-kcal', r(dayTot.kcal));
+  set(day+'-tot-p', r1(dayTot.p));
+  set(day+'-tot-c', r1(dayTot.c));
+  set(day+'-tot-f', r1(dayTot.f));
+}
+
+function calcAll() {
+  calcDay('lun'); calcDay('gio'); calcDay('rest');
+  calcCustomMeals();
+  triggerSave();
+}
+
+// ═══════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════
+function goTo(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// DAY TABS
+// ═══════════════════════════════════════
+function showDay(day, btn) {
+  ['lun','gio','rest'].forEach(d => {
+    const el = document.getElementById('day-'+d);
+    if (el) el.style.display = 'none';
+  });
+  const t = document.getElementById('day-'+day);
+  if (t) t.style.display = 'block';
+  document.querySelectorAll('#page-piano .dtab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function showCheckDay(id, btn) {
+  ['cwo14','cwo11','criposo'].forEach(d => {
+    const el = document.getElementById(d);
+    if (el) el.style.display = 'none';
+  });
+  const t = document.getElementById(id);
+  if (t) t.style.display = 'block';
+  document.querySelectorAll('#page-checklist .dtab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// MEAL TOGGLE
+// ═══════════════════════════════════════
+function toggleMeal(head) {
+  let el = head.nextElementSibling;
+  while (el && !el.classList.contains('meal-body')) el = el.nextElementSibling;
+  if (!el) return;
+  el.classList.toggle('open');
+  const arr = head.querySelector('.arr');
+  if (arr) arr.classList.toggle('open');
+}
+
+// ═══════════════════════════════════════
+// CHECKLIST
+// ═══════════════════════════════════════
+function toggleChk(el) { el.classList.toggle('done'); triggerSave(); }
+function resetChecks() { document.querySelectorAll('.chk').forEach(c => c.classList.remove('done')); triggerSave(); }
+
+// ═══════════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════════
+function addProgEntry(vals) {
+  const list = document.getElementById('prog-list');
+  const id = 'pe-' + Date.now();
+  const div = document.createElement('div');
+  div.className = 'prog-entry'; div.id = id;
+  div.innerHTML = `
+    <input type="date" value="${vals&&vals[0]||''}" onblur="triggerSave()">
+    <input type="number" step="0.1" placeholder="93.0" value="${vals&&vals[1]||''}" onblur="triggerSave();updateSidebarPeso()">
+    <input type="number" step="0.5" placeholder="17" value="${vals&&vals[2]||''}" onblur="triggerSave()">
+    <input type="text" placeholder="note..." value="${vals&&vals[3]||''}" onblur="triggerSave()">
+    <button class="del-btn" onclick="document.getElementById('${id}').remove();triggerSave()">×</button>
+  `;
+  list.appendChild(div);
+}
+function updateSidebarPeso() {
+  const inputs = document.querySelectorAll('#prog-list .prog-entry input[type="number"]:first-of-type');
+  const last = inputs[inputs.length-1];
+  const el = document.getElementById('sidebar-peso');
+  if (last && last.value && el) el.textContent = last.value + ' kg';
+}
+
+// ═══════════════════════════════════════
+// NOTE
+// ═══════════════════════════════════════
+function updateChars() {
+  const ta = document.getElementById('main-note');
+  const el = document.getElementById('note-chars');
+  if (ta && el) el.textContent = ta.value.length + ' car.';
+}
+
+// ═══════════════════════════════════════
+// FOOD DB TABLE
+// ═══════════════════════════════════════
+function renderFoodDB() {
+  const tbody = document.getElementById('db-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  Object.entries(foods).forEach(([key, f]) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${f.name}</td>
+      <td style="color:var(--t3)">${f.unit === 'pz' ? 'per pz' : 'per 100g'}</td>
+      <td><input type="number" step="1" value="${r(f.kcal)}" onchange="updateFood('${key}','kcal',this.value)"></td>
+      <td><input type="number" step="0.1" value="${r1(f.p)}" onchange="updateFood('${key}','p',this.value)"></td>
+      <td><input type="number" step="0.1" value="${r1(f.c)}" onchange="updateFood('${key}','c',this.value)"></td>
+      <td><input type="number" step="0.1" value="${r1(f.f)}" onchange="updateFood('${key}','f',this.value)"></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+function updateFood(key, macro, val) {
+  if (foods[key]) { foods[key][macro] = parseFloat(val) || 0; }
+  calcAll();
+  localStorage.setItem('foods_v4', JSON.stringify(foods));
+}
+
+// ═══════════════════════════════════════
+// CUSTOM MEALS
+// ═══════════════════════════════════════
+let customMeals = [];
+
+function addCustomMeal(data) {
+  const id = 'cm-' + Date.now();
+  const meal = data || {id, name:'', ingredients:[]};
+  if (!data) { meal.id = id; customMeals.push(meal); }
+  renderCustomMeals();
+}
+
+function renderCustomMeals() {
+  const list = document.getElementById('custom-meals-list');
+  if (!list) return;
+  list.innerHTML = '';
+  customMeals.forEach(meal => {
+    const div = document.createElement('div');
+    div.className = 'custom-meal-editor';
+    div.id = meal.id;
+    const foodOptions = Object.entries(foods).map(([k,f]) =>
+      `<option value="${k}">${f.name}</option>`
+    ).join('');
+    const ingrRows = meal.ingredients.map((ing, i) => `
+      <div class="custom-ingr-row">
+        <span>${foods[ing.key] ? foods[ing.key].name : ing.key}</span>
+        <input type="number" value="${ing.qty}" min="0" step="${foods[ing.key]&&foods[ing.key].unit==='pz'?1:5}" onchange="updateCustomIngr('${meal.id}',${i},this.value)">
+        <span style="font-size:10px;color:var(--t3)">${foods[ing.key]&&foods[ing.key].unit==='pz'?'pz':'g'}</span>
+        <button class="del-ingr" onclick="removeCustomIngr('${meal.id}',${i})">×</button>
+      </div>
+    `).join('');
+    const tot = calcCustomMealMacros(meal);
+    div.innerHTML = `
+      <div class="cme-head">
+        <input class="cme-name-input" type="text" placeholder="Nome pasto..." value="${meal.name}" onchange="updateCustomMealName('${meal.id}',this.value)">
+        <div class="meal-kcal" id="${meal.id}-kcal">${r(tot.kcal)} kcal</div>
+        <button class="btn-sm danger" onclick="removeCustomMeal('${meal.id}')">× elimina</button>
+      </div>
+      <div class="cme-body">
+        ${ingrRows}
+        <div class="add-ingr-row" style="margin-top:8px;">
+          <select id="${meal.id}-sel" style="background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:6px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">${foodOptions}</select>
+          <input type="number" id="${meal.id}-qty" placeholder="100" value="100" min="0" style="background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:6px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+          <span style="font-size:10px;color:var(--t3);padding-left:4px;">g / pz</span>
+          <button class="btn-sm" onclick="addCustomIngr('${meal.id}')">+ add</button>
+        </div>
+        <div class="meal-macro-row" id="${meal.id}-macros" style="margin-top:10px;">
+          <span>P: <strong>${r1(tot.p)}g</strong></span>
+          <span>C: <strong>${r1(tot.c)}g</strong></span>
+          <span>G: <strong>${r1(tot.f)}g</strong></span>
+        </div>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function calcCustomMealMacros(meal) {
+  let tot = {kcal:0,p:0,c:0,f:0};
+  meal.ingredients.forEach(ing => {
+    const m = getMacros(ing.key, ing.qty);
+    tot.kcal+=m.kcal; tot.p+=m.p; tot.c+=m.c; tot.f+=m.f;
+  });
+  return tot;
+}
+
+function calcCustomMeals() {
+  customMeals.forEach(meal => {
+    const tot = calcCustomMealMacros(meal);
+    const kEl = document.getElementById(meal.id+'-kcal');
+    const mEl = document.getElementById(meal.id+'-macros');
+    if (kEl) kEl.textContent = r(tot.kcal) + ' kcal';
+    if (mEl) {
+      const ss = mEl.querySelectorAll('strong');
+      if(ss[0]) ss[0].textContent = r1(tot.p)+'g';
+      if(ss[1]) ss[1].textContent = r1(tot.c)+'g';
+      if(ss[2]) ss[2].textContent = r1(tot.f)+'g';
+    }
+  });
+}
+
+function addCustomIngr(mealId) {
+  const sel = document.getElementById(mealId+'-sel');
+  const qty = document.getElementById(mealId+'-qty');
+  if (!sel || !qty) return;
+  const meal = customMeals.find(m => m.id === mealId);
+  if (meal) {
+    meal.ingredients.push({key: sel.value, qty: parseFloat(qty.value)||100});
+    renderCustomMeals();
+    triggerSave();
+  }
+}
+
+function updateCustomIngr(mealId, idx, val) {
+  const meal = customMeals.find(m => m.id === mealId);
+  if (meal && meal.ingredients[idx]) {
+    meal.ingredients[idx].qty = parseFloat(val)||0;
+    calcCustomMeals(); triggerSave();
+  }
+}
+
+function removeCustomIngr(mealId, idx) {
+  const meal = customMeals.find(m => m.id === mealId);
+  if (meal) { meal.ingredients.splice(idx,1); renderCustomMeals(); triggerSave(); }
+}
+
+function updateCustomMealName(mealId, name) {
+  const meal = customMeals.find(m => m.id === mealId);
+  if (meal) { meal.name = name; triggerSave(); }
+}
+
+function removeCustomMeal(mealId) {
+  customMeals = customMeals.filter(m => m.id !== mealId);
+  renderCustomMeals(); triggerSave();
+}
+
+// ═══════════════════════════════════════
+// SAVE / LOAD
+// ═══════════════════════════════════════
+let saveTimer;
+function triggerSave() {
+  clearTimeout(saveTimer);
+  const pill = document.getElementById('save-pill');
+  if (pill) { pill.classList.remove('saved'); }
+  saveTimer = setTimeout(() => { saveAll(); if (pill) pill.classList.add('saved'); }, 700);
+}
+
+function saveAll() {
+  try {
+    const data = {};
+    // Ingredient quantities per meal
+    document.querySelectorAll('[data-meal]').forEach(list => {
+      const key = list.dataset.meal;
+      data['meal_'+key] = [];
+      list.querySelectorAll('.ingr-g').forEach(inp => data['meal_'+key].push(inp.value));
+    });
+    // Checklist
+    data.checks = Array.from(document.querySelectorAll('.chk')).map(c => c.classList.contains('done'));
+    // Notes
+    const mn = document.getElementById('main-note');
+    if (mn) data.note = mn.value;
+    // Progress
+    data.progress = Array.from(document.querySelectorAll('.prog-entry')).map(e => ({
+      id: e.id,
+      vals: Array.from(e.querySelectorAll('input')).map(i => i.value)
+    }));
+    // Custom meals
+    data.customMeals = customMeals;
+    localStorage.setItem('piano_v4', JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadAll() {
+  try {
+    const raw = localStorage.getItem('piano_v4');
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    // Ingredients
+    Object.entries(data).forEach(([k, v]) => {
+      if (k.startsWith('meal_') && Array.isArray(v)) {
+        const mealKey = k.replace('meal_','');
+        const list = document.querySelector(`[data-meal="${mealKey}"]`);
+        if (list) {
+          const inputs = list.querySelectorAll('.ingr-g');
+          v.forEach((val, i) => { if (inputs[i]) inputs[i].value = val; });
+        }
+      }
+    });
+    // Checks
+    if (data.checks) {
+      const chks = document.querySelectorAll('.chk');
+      data.checks.forEach((done, i) => { if (chks[i] && done) chks[i].classList.add('done'); });
+    }
+    // Note
+    const mn = document.getElementById('main-note');
+    if (mn && data.note) { mn.value = data.note; updateChars(); }
+    // Progress
+    if (data.progress) data.progress.forEach(e => addProgEntry(e.vals));
+    // Custom meals
+    if (data.customMeals) { customMeals = data.customMeals; renderCustomMeals(); }
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+window.addEventListener('load', () => {
+  renderFoodDB();
+  loadAll();
+  calcAll();
+});
+</script>
+</body>
+</html>
