@@ -118,6 +118,20 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
 .ibox-b{background:var(--bd);border-color:var(--b);color:var(--ba);}
 .ibox-r{background:var(--rd);border-color:var(--r);color:var(--ra);}
 
+/* ── MEAL EDIT PANEL ── */
+.meal-edit-toggle{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--t3);cursor:pointer;padding:6px 2px;border:none;background:transparent;font-family:var(--mono);transition:color .15s;margin-top:4px;}
+.meal-edit-toggle:hover{color:var(--t2);}
+.meal-edit-panel{display:none;margin-top:8px;border-top:1px dashed var(--b1);padding-top:10px;}
+.meal-edit-panel.open{display:block;}
+.meal-edit-row{display:grid;grid-template-columns:1fr 70px 50px auto;gap:5px;align-items:center;margin-bottom:5px;}
+.meal-edit-row input,.meal-edit-row select{background:var(--bg4);border:1px solid var(--b1);border-radius:var(--rad-s);padding:5px 8px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;width:100%;}
+.meal-edit-row input::placeholder{color:var(--t3);}
+.meal-edit-row select option{background:var(--bg4);}
+.ingr-del{background:transparent;border:none;color:var(--t3);font-size:16px;cursor:pointer;line-height:1;padding:0 3px;transition:color .15s;font-family:var(--mono);}
+.ingr-del:hover{color:var(--r);}
+.ingr-editable{display:grid;grid-template-columns:1fr 60px 40px 28px;align-items:center;gap:8px;padding:6px 10px;background:var(--bg3);border-radius:var(--rad-s);border:1px solid transparent;transition:border-color .15s;margin-bottom:3px;}
+.ingr-editable:hover{border-color:var(--b1);}
+
 /* ── CUSTOM MEALS PAGE ── */
 .custom-meal-editor{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;margin-bottom:12px;}
 .cme-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--b1);}
@@ -362,7 +376,13 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Proteine</div><strong id="lun-tot-p">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Carbs</div><strong id="lun-tot-c">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Grassi</div><strong id="lun-tot-f">—</strong>g</div>
-      <div class="tot-item" style="margin-left:auto;"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Target</div><strong>2050</strong> kcal</div>
+      <div class="tot-item" style="margin-left:auto;border-left:1px solid var(--b1);padding-left:20px;">
+        <div style="font-size:10px;color:var(--t3);margin-bottom:4px;letter-spacing:0.06em;text-transform:uppercase;">Target</div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.9;">
+          <span style="color:var(--g);font-family:var(--head);font-size:13px;">2050</span> kcal<br>
+          <span style="color:var(--b);">~190</span>g prot &nbsp;·&nbsp; <span style="color:var(--a);">~200</span>g carbs &nbsp;·&nbsp; <span style="color:var(--r);">~45</span>g grassi
+        </div>
+      </div>
     </div>
   </div>
 
@@ -462,7 +482,13 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Proteine</div><strong id="gio-tot-p">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Carbs</div><strong id="gio-tot-c">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Grassi</div><strong id="gio-tot-f">—</strong>g</div>
-      <div class="tot-item" style="margin-left:auto;"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Target</div><strong>2050</strong> kcal</div>
+      <div class="tot-item" style="margin-left:auto;border-left:1px solid var(--b1);padding-left:20px;">
+        <div style="font-size:10px;color:var(--t3);margin-bottom:4px;letter-spacing:0.06em;text-transform:uppercase;">Target</div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.9;">
+          <span style="color:var(--g);font-family:var(--head);font-size:13px;">2050</span> kcal<br>
+          <span style="color:var(--b);">~190</span>g prot &nbsp;·&nbsp; <span style="color:var(--a);">~200</span>g carbs &nbsp;·&nbsp; <span style="color:var(--r);">~45</span>g grassi
+        </div>
+      </div>
     </div>
   </div>
 
@@ -544,7 +570,13 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Proteine</div><strong id="rest-tot-p">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Carbs</div><strong id="rest-tot-c">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Grassi</div><strong id="rest-tot-f">—</strong>g</div>
-      <div class="tot-item" style="margin-left:auto;"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Target</div><strong>1650</strong> kcal</div>
+      <div class="tot-item" style="margin-left:auto;border-left:1px solid var(--b1);padding-left:20px;">
+        <div style="font-size:10px;color:var(--t3);margin-bottom:4px;letter-spacing:0.06em;text-transform:uppercase;">Target</div>
+        <div style="font-size:11px;color:var(--t2);line-height:1.9;">
+          <span style="color:var(--a);font-family:var(--head);font-size:13px;">1650</span> kcal<br>
+          <span style="color:var(--b);">~170</span>g prot &nbsp;·&nbsp; <span style="color:var(--a);">~130</span>g carbs &nbsp;·&nbsp; <span style="color:var(--r);">~40</span>g grassi
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -999,6 +1031,148 @@ function removeCustomMeal(mealId) {
 }
 
 // ═══════════════════════════════════════
+// PIANO PASTI — GESTIONE INGREDIENTI
+// ═══════════════════════════════════════
+
+// Stato aggiuntivo: ingredienti aggiunti dall'utente per ogni pasto del piano
+// Struttura: { 'lun-m3': [{key, name, qty, unit}], ... }
+let mealExtraIngr = JSON.parse(localStorage.getItem('mealExtraIngr_v1') || '{}');
+
+function toggleMealEdit(btn, listId) {
+  const panel = document.getElementById('ep-' + listId);
+  if (!panel) return;
+  const open = panel.classList.toggle('open');
+  btn.textContent = open ? '▲ chiudi modifica' : '✎ modifica ingredienti';
+}
+
+function removeMealIngr(ingrEl, listEl) {
+  ingrEl.remove();
+  const listId = listEl.dataset.meal;
+  // Salva indici rimasti
+  saveMealIngrState(listId, listEl);
+  calcAll();
+}
+
+function saveMealIngrState(listId, listEl) {
+  // Salva gli extra (quelli con data-extra="1")
+  const extras = [];
+  listEl.querySelectorAll('.ingr[data-extra="1"]').forEach(ingr => {
+    extras.push({
+      key: ingr.dataset.food,
+      name: ingr.querySelector('.ingr-name').textContent,
+      qty: ingr.querySelector('.ingr-g').value,
+      unit: ingr.querySelector('.ingr-unit').textContent.trim()
+    });
+  });
+  mealExtraIngr[listId] = extras;
+  localStorage.setItem('mealExtraIngr_v1', JSON.stringify(mealExtraIngr));
+}
+
+function buildIngrRow(foodKey, foodName, qty, unit, listEl, isExtra) {
+  const div = document.createElement('div');
+  div.className = 'ingr';
+  div.dataset.food = foodKey;
+  if (isExtra) div.dataset.extra = '1';
+  div.innerHTML = `<div><div class="ingr-name">${foodName}</div></div>
+    <input type="number" class="ingr-g" value="${qty}" min="0" max="9999" onchange="calcAll()">
+    <span class="ingr-unit">${unit}</span>`;
+  return div;
+}
+
+function addIngrToMeal(listId) {
+  const sel = document.getElementById('ea-sel-' + listId);
+  const qtyIn = document.getElementById('ea-qty-' + listId);
+  const listEl = document.querySelector(`[data-meal="${listId}"]`);
+  if (!sel || !qtyIn || !listEl) return;
+  const key = sel.value;
+  const f = foods[key];
+  if (!f) return;
+  const qty = parseFloat(qtyIn.value) || 100;
+  const row = buildIngrRow(key, f.name, qty, f.unit === 'pz' ? 'pz' : 'g', listEl, true);
+  // Aggiungi bottone elimina nel pannello edit
+  listEl.appendChild(row);
+  // Aggiungi riga nell'edit panel con pulsante rimuovi
+  const ep = document.getElementById('ep-' + listId);
+  if (ep) renderEditPanel(listId, listEl, ep);
+  saveMealIngrState(listId, listEl);
+  qtyIn.value = 100;
+  calcAll();
+}
+
+function renderEditPanel(listId, listEl, ep) {
+  const foodOptions = Object.entries(foods).map(([k,f]) =>
+    `<option value="${k}">${f.name}</option>`).join('');
+
+  // Riga aggiungi nuovo
+  let html = `<div style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);margin-bottom:6px;">Aggiungi alimento</div>
+    <div class="meal-edit-row">
+      <select id="ea-sel-${listId}" style="background:var(--bg4);border:1px solid var(--b1);border-radius:var(--rad-s);padding:5px 8px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">${foodOptions}</select>
+      <input type="number" id="ea-qty-${listId}" value="100" min="0" placeholder="100">
+      <span style="font-size:10px;color:var(--t3);padding-left:2px;">g / pz</span>
+      <button class="btn-sm" onclick="addIngrToMeal('${listId}')">+ add</button>
+    </div>`;
+
+  // Riga rimuovi per ogni ingrediente esistente
+  html += `<div style="font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);margin:10px 0 6px;">Rimuovi ingrediente</div>`;
+  listEl.querySelectorAll('.ingr').forEach((ingr, idx) => {
+    const name = ingr.querySelector('.ingr-name').textContent;
+    html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg4);border-radius:var(--rad-s);margin-bottom:3px;font-size:11px;color:var(--t2);">
+      <span>${name}</span>
+      <button class="ingr-del" onclick="removePianoIngr('${listId}',${idx})">×</button>
+    </div>`;
+  });
+
+  ep.innerHTML = html;
+}
+
+function removePianoIngr(listId, idx) {
+  const listEl = document.querySelector(`[data-meal="${listId}"]`);
+  if (!listEl) return;
+  const ingrs = listEl.querySelectorAll('.ingr');
+  if (ingrs[idx]) ingrs[idx].remove();
+  const ep = document.getElementById('ep-' + listId);
+  if (ep) renderEditPanel(listId, listEl, ep);
+  saveMealIngrState(listId, listEl);
+  calcAll();
+}
+
+function initMealEditPanels() {
+  document.querySelectorAll('[data-meal]').forEach(listEl => {
+    const listId = listEl.dataset.meal;
+    if (listEl.dataset.day === undefined) return; // solo piano pasti (ha data-day)
+    if (!listEl.dataset.day) return;
+
+    // Ricarica extra ingredienti salvati
+    const extras = mealExtraIngr[listId] || [];
+    extras.forEach(ex => {
+      const row = buildIngrRow(ex.key, ex.name, ex.qty, ex.unit, listEl, true);
+      listEl.appendChild(row);
+    });
+
+    // Crea bottone toggle + pannello edit sotto la meal-body
+    const mealBody = listEl.closest('.meal-body');
+    if (!mealBody) return;
+
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'meal-edit-toggle';
+    toggleBtn.textContent = '✎ modifica ingredienti';
+    toggleBtn.onclick = () => {
+      const panel = document.getElementById('ep-' + listId);
+      const open = panel.classList.toggle('open');
+      if (open) renderEditPanel(listId, listEl, panel);
+      toggleBtn.textContent = open ? '▲ chiudi modifica' : '✎ modifica ingredienti';
+    };
+
+    const panel = document.createElement('div');
+    panel.className = 'meal-edit-panel';
+    panel.id = 'ep-' + listId;
+
+    mealBody.appendChild(toggleBtn);
+    mealBody.appendChild(panel);
+  });
+}
+
+// ═══════════════════════════════════════
 // SAVE / LOAD
 // ═══════════════════════════════════════
 let saveTimer;
@@ -1071,6 +1245,7 @@ function loadAll() {
 window.addEventListener('load', () => {
   renderFoodDB();
   loadAll();
+  initMealEditPanels();
   calcAll();
 });
 </script>
