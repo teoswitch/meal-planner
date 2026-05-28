@@ -283,7 +283,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">~13:30</span>
-        <span class="meal-name">Pre-workout</span>
+        <span class="meal-name" data-section="lun-m1" ondblclick="renameMealSection(this)">Pre-workout</span>
         <span class="badge bg-a">opzionale</span>
         <span class="meal-kcal" id="lun-m1-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -306,7 +306,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal hi">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">Post WO ~15:30</span>
-        <span class="meal-name">Post-workout</span>
+        <span class="meal-name" data-section="lun-m2" ondblclick="renameMealSection(this)">Post-workout</span>
         <span class="badge bg-t">invariato ✓</span>
         <span class="meal-kcal" id="lun-m2-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -326,7 +326,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">~20:00</span>
-        <span class="meal-name">Cena</span>
+        <span class="meal-name" data-section="lun-m3" ondblclick="renameMealSection(this)">Cena</span>
         <span class="badge bg-g">principale</span>
         <span class="meal-kcal" id="lun-m3-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -353,7 +353,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal hi">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">~22:30</span>
-        <span class="meal-name">Pre-nanna</span>
+        <span class="meal-name" data-section="lun-m4" ondblclick="renameMealSection(this)">Pre-nanna</span>
         <span class="badge bg-r">anti-catabolismo</span>
         <span class="meal-kcal" id="lun-m4-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -377,11 +377,11 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Carbs</div><strong id="lun-tot-c">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Grassi</div><strong id="lun-tot-f">—</strong>g</div>
       <div class="tot-item" style="margin-left:auto;border-left:1px solid var(--b1);padding-left:20px;">
-        <div style="font-size:10px;color:var(--t3);margin-bottom:4px;letter-spacing:0.06em;text-transform:uppercase;">Target</div>
-        <div style="font-size:11px;color:var(--t2);line-height:1.9;">
-          <span style="color:var(--g);font-family:var(--head);font-size:13px;">2050</span> kcal<br>
-          <span style="color:var(--b);">~190</span>g prot &nbsp;·&nbsp; <span style="color:var(--a);">~200</span>g carbs &nbsp;·&nbsp; <span style="color:var(--r);">~45</span>g grassi
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div style="font-size:10px;color:var(--t3);letter-spacing:0.06em;text-transform:uppercase;">Target</div>
+          <button class="btn-sm" onclick="openTargetModal('lun')" style="font-size:9px;padding:2px 8px;">&#x270e;</button>
         </div>
+        <div id="target-lun-display" style="font-size:11px;color:var(--t2);line-height:1.9;"></div>
       </div>
     </div>
   </div>
@@ -398,7 +398,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal hi">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">Post WO ~12:30</span>
-        <span class="meal-name">Post-workout</span>
+        <span class="meal-name" data-section="gio-m1" ondblclick="renameMealSection(this)">Post-workout</span>
         <span class="badge bg-t">invariato ✓</span>
         <span class="meal-kcal" id="gio-m1-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -418,7 +418,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">~18:00</span>
-        <span class="meal-name">Spuntino pomeridiano</span>
+        <span class="meal-name" data-section="gio-m2" ondblclick="renameMealSection(this)">Spuntino pomeridiano</span>
         <span class="badge bg-a">solo se hai fame</span>
         <span class="meal-kcal" id="gio-m2-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -438,7 +438,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">~20:00</span>
-        <span class="meal-name">Cena</span>
+        <span class="meal-name" data-section="gio-m3" ondblclick="renameMealSection(this)">Cena</span>
         <span class="badge bg-g">principale</span>
         <span class="meal-kcal" id="gio-m3-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -460,7 +460,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal hi">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">~22:30</span>
-        <span class="meal-name">Pre-nanna</span>
+        <span class="meal-name" data-section="gio-m4" ondblclick="renameMealSection(this)">Pre-nanna</span>
         <span class="badge bg-r">anti-catabolismo</span>
         <span class="meal-kcal" id="gio-m4-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -483,11 +483,11 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Carbs</div><strong id="gio-tot-c">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Grassi</div><strong id="gio-tot-f">—</strong>g</div>
       <div class="tot-item" style="margin-left:auto;border-left:1px solid var(--b1);padding-left:20px;">
-        <div style="font-size:10px;color:var(--t3);margin-bottom:4px;letter-spacing:0.06em;text-transform:uppercase;">Target</div>
-        <div style="font-size:11px;color:var(--t2);line-height:1.9;">
-          <span style="color:var(--g);font-family:var(--head);font-size:13px;">2050</span> kcal<br>
-          <span style="color:var(--b);">~190</span>g prot &nbsp;·&nbsp; <span style="color:var(--a);">~200</span>g carbs &nbsp;·&nbsp; <span style="color:var(--r);">~45</span>g grassi
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div style="font-size:10px;color:var(--t3);letter-spacing:0.06em;text-transform:uppercase;">Target</div>
+          <button class="btn-sm" onclick="openTargetModal('gio')" style="font-size:9px;padding:2px 8px;">&#x270e;</button>
         </div>
+        <div id="target-gio-display" style="font-size:11px;color:var(--t2);line-height:1.9;"></div>
       </div>
     </div>
   </div>
@@ -505,7 +505,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">~12:30</span>
-        <span class="meal-name">Pranzo</span>
+        <span class="meal-name" data-section="rest-m1" ondblclick="renameMealSection(this)">Pranzo</span>
         <span class="badge bg-a">opzionale</span>
         <span class="meal-kcal" id="rest-m1-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -524,7 +524,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">~20:00</span>
-        <span class="meal-name">Cena</span>
+        <span class="meal-name" data-section="rest-m2" ondblclick="renameMealSection(this)">Cena</span>
         <span class="badge bg-g">pasto principale</span>
         <span class="meal-kcal" id="rest-m2-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -548,7 +548,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
     <div class="meal hi">
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time">~22:30</span>
-        <span class="meal-name">Pre-nanna</span>
+        <span class="meal-name" data-section="rest-m3" ondblclick="renameMealSection(this)">Pre-nanna</span>
         <span class="badge bg-r">anti-catabolismo</span>
         <span class="meal-kcal" id="rest-m3-kcal">— kcal</span>
         <span class="arr">▶</span>
@@ -571,11 +571,11 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Carbs</div><strong id="rest-tot-c">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Grassi</div><strong id="rest-tot-f">—</strong>g</div>
       <div class="tot-item" style="margin-left:auto;border-left:1px solid var(--b1);padding-left:20px;">
-        <div style="font-size:10px;color:var(--t3);margin-bottom:4px;letter-spacing:0.06em;text-transform:uppercase;">Target</div>
-        <div style="font-size:11px;color:var(--t2);line-height:1.9;">
-          <span style="color:var(--a);font-family:var(--head);font-size:13px;">1650</span> kcal<br>
-          <span style="color:var(--b);">~170</span>g prot &nbsp;·&nbsp; <span style="color:var(--a);">~130</span>g carbs &nbsp;·&nbsp; <span style="color:var(--r);">~40</span>g grassi
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div style="font-size:10px;color:var(--t3);letter-spacing:0.06em;text-transform:uppercase;">Target</div>
+          <button class="btn-sm" onclick="openTargetModal('rest')" style="font-size:9px;padding:2px 8px;">&#x270e;</button>
         </div>
+        <div id="target-rest-display" style="font-size:11px;color:var(--t2);line-height:1.9;"></div>
       </div>
     </div>
   </div>
@@ -672,6 +672,36 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
 <div class="page" id="page-progress">
   <div class="ph"><div><h2>Peso corporeo</h2><p>ogni 7-10 giorni · mattino · stomaco vuoto</p></div></div>
   <div class="ibox ibox-a"><strong>Regola revisione:</strong> se dopo 3 settimane il peso non si muove, togli 100-150 kcal dai carbs della cena nei giorni di riposo.</div>
+  <div style="margin-bottom:12px;">
+    <button class="btn-sm" onclick="toggleBFGuide(this)" style="display:flex;align-items:center;gap:6px;font-size:10px;">&#x1F4CA; Come stimare il tuo BF%</button>
+    <div id="bf-guide" style="display:none;margin-top:10px;">
+      <div class="ibox ibox-b" style="margin-bottom:8px;"><strong>Stima visiva della % di grasso (uomini)</strong><br>Non servono strumenti costosi. Osserva allo specchio e confronta con i riferimenti qui sotto.</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-bottom:10px;">
+        <div style="background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad);padding:12px 14px;">
+          <div style="font-family:var(--head);font-size:15px;color:var(--tl);margin-bottom:4px;">6–9%</div>
+          <div style="font-size:11px;color:var(--t2);line-height:1.7;">Competizione fitness. Addominali visibilissimi, separazioni muscolari marcate, vene ovunque. Non sostenibile a lungo.</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad);padding:12px 14px;">
+          <div style="font-family:var(--head);font-size:15px;color:var(--g);margin-bottom:4px;">10–14%</div>
+          <div style="font-size:11px;color:var(--t2);line-height:1.7;">Forma atletica. Addominali visibili a riposo, muscoli definiti, qualche vena sulle braccia. Il classico &ldquo;fisico asciutto&rdquo;.</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad);padding:12px 14px;">
+          <div style="font-family:var(--head);font-size:15px;color:var(--a);margin-bottom:4px;">15–19%</div>
+          <div style="font-size:11px;color:var(--t2);line-height:1.7;">Forma normale/fit. Addominali visibili solo contratti, muscoli in evidenza ma non definiti. Zona &ldquo;bulk pulito&rdquo;.</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad);padding:12px 14px;">
+          <div style="font-family:var(--head);font-size:15px;color:var(--r);margin-bottom:4px;">20–25%</div>
+          <div style="font-size:11px;color:var(--t2);line-height:1.7;">Nei limiti, ma con grasso visibile su addome e fianchi. Nessun addominale evidente. Punto di partenza tipico per un cut.</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad);padding:12px 14px;">
+          <div style="font-family:var(--head);font-size:15px;color:var(--ra);margin-bottom:4px;">25%+</div>
+          <div style="font-size:11px;color:var(--t2);line-height:1.7;">Sovrappeso. Grasso distribuito su addome, fianchi, petto. Muscoli non visibili. Un buon cut strutturato cambia tutto.</div>
+        </div>
+      </div>
+      <div class="ibox ibox-g" style="margin-bottom:6px;"><strong>Come misurarlo praticamente:</strong><br>&bull; <strong>Visivo</strong>: confronta con foto di riferimento (cerca &ldquo;body fat percentage men visual guide&rdquo;)<br>&bull; <strong>Plicometro</strong>: pinza cutanea addome + coscia &mdash; formula Jackson-Pollock<br>&bull; <strong>Circonferenze</strong>: collo + vita + altezza &rarr; formule US Navy (gratis online)<br>&bull; <strong>DEXA scan</strong>: il pi&ugrave; preciso, disponibile in alcuni centri medici (~50&ndash;80&euro;)</div>
+      <div class="ibox ibox-a"><strong>Il numero esatto conta poco.</strong> Usalo come tendenza nel tempo &mdash; non come verit&agrave; assoluta. Se scende progressivamente e ti senti meglio, sei sulla strada giusta.</div>
+    </div>
+  </div>
   <div style="display:grid;grid-template-columns:110px 70px 65px 1fr 24px;gap:8px;padding:6px 12px;border-bottom:1px solid var(--b1);margin-bottom:4px;">
     <span style="font-size:9px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;">Data</span>
     <span style="font-size:9px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;">Peso kg</span>
@@ -694,6 +724,64 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
   </div>
 </div>
 
+
+<!-- MODAL: TARGET MACRO EDITOR -->
+<div id="target-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:var(--bg2);border:1px solid var(--b2);border-radius:var(--rad);padding:24px;width:340px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div style="font-family:var(--head);font-size:15px;margin-bottom:4px;" id="target-modal-title">Modifica Target</div>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:18px;">Imposta obiettivo per questo tipo di giornata</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div>
+        <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Preset obiettivo</div>
+        <select id="tm-preset" onchange="applyTargetPreset()" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+          <option value="">Personalizzato</option>
+          <option value="cut-lun">Cut &mdash; WO (lun/mar)</option>
+          <option value="cut-gio">Cut &mdash; WO (gio)</option>
+          <option value="cut-rest">Cut &mdash; Riposo</option>
+          <option value="maint-lun">Mantenimento &mdash; WO</option>
+          <option value="maint-rest">Mantenimento &mdash; Riposo</option>
+          <option value="bulk-lun">Bulk &mdash; WO</option>
+          <option value="bulk-rest">Bulk &mdash; Riposo</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Kcal target</div>
+        <input type="number" id="tm-kcal" min="800" max="5000" step="50" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
+      <div>
+        <div style="font-size:9px;color:var(--b);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Proteine g</div>
+        <input type="number" id="tm-p" min="0" max="400" step="5" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--a);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Carbs g</div>
+        <input type="number" id="tm-c" min="0" max="600" step="5" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--r);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Grassi g</div>
+        <input type="number" id="tm-f" min="0" max="200" step="5" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn-sm" onclick="closeTargetModal()">Annulla</button>
+      <button class="btn-sm" onclick="saveTargetModal()" style="background:var(--gd);color:var(--g);border-color:var(--g);">Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: RENAME MEAL SECTION -->
+<div id="rename-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:var(--bg2);border:1px solid var(--b2);border-radius:var(--rad);padding:24px;width:300px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div style="font-family:var(--head);font-size:15px;margin-bottom:6px;">Rinomina sezione</div>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:14px;">Doppio click sul nome del pasto per rinominare</div>
+    <input type="text" id="rename-input" style="width:100%;background:var(--bg3);border:1px solid var(--b3);border-radius:var(--rad-s);padding:9px 12px;font-family:var(--mono);font-size:13px;color:var(--t1);outline:none;margin-bottom:16px;">
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn-sm" onclick="closeRenameModal()">Annulla</button>
+      <button class="btn-sm" onclick="saveRenameModal()" style="background:var(--gd);color:var(--g);border-color:var(--g);">Salva</button>
+    </div>
+  </div>
+</div>
 </main>
 </div>
 
@@ -918,6 +1006,14 @@ function updateFood(key, macro, val) {
 // CUSTOM MEALS
 // ═══════════════════════════════════════
 let customMeals = [];
+
+// ─── Early declarations (needed by saveAll/loadAll) ───
+var mealSectionNames = {};
+var macroTargets = {
+  lun:  { kcal: 2050, p: 190, c: 200, f: 45 },
+  gio:  { kcal: 2050, p: 190, c: 200, f: 45 },
+  rest: { kcal: 1650, p: 170, c: 130, f: 40 }
+};
 
 function addCustomMeal(data) {
   const id = 'cm-' + Date.now();
@@ -1186,11 +1282,15 @@ function triggerSave() {
 function saveAll() {
   try {
     const data = {};
-    // Ingredient quantities per meal
+    // Ingredient quantities per meal — saved by food-key (not position)
     document.querySelectorAll('[data-meal]').forEach(list => {
       const key = list.dataset.meal;
-      data['meal_'+key] = [];
-      list.querySelectorAll('.ingr-g').forEach(inp => data['meal_'+key].push(inp.value));
+      const ingrs = {};
+      list.querySelectorAll('.ingr').forEach(ingr => {
+        const fk = ingr.dataset.food;
+        if (fk) ingrs[fk] = ingr.querySelector('.ingr-g').value;
+      });
+      data['meal_'+key] = ingrs;
     });
     // Checklist
     data.checks = Array.from(document.querySelectorAll('.chk')).map(c => c.classList.contains('done'));
@@ -1202,9 +1302,10 @@ function saveAll() {
       id: e.id,
       vals: Array.from(e.querySelectorAll('input')).map(i => i.value)
     }));
-    // Custom meals
     data.customMeals = customMeals;
-    localStorage.setItem('piano_v4', JSON.stringify(data));
+    data.mealSectionNames = mealSectionNames;
+    data.macroTargets = macroTargets;
+    localStorage.setItem('piano_v5', JSON.stringify(data));
   } catch(e) {}
 }
 
@@ -1213,15 +1314,22 @@ function loadAll() {
     const raw = localStorage.getItem('piano_v4');
     if (!raw) return;
     const data = JSON.parse(raw);
-    // Ingredients
+    // Ingredients — restore by food-key (robust, position-independent)
     Object.entries(data).forEach(([k, v]) => {
-      if (k.startsWith('meal_') && Array.isArray(v)) {
-        const mealKey = k.replace('meal_','');
-        const list = document.querySelector(`[data-meal="${mealKey}"]`);
-        if (list) {
-          const inputs = list.querySelectorAll('.ingr-g');
-          v.forEach((val, i) => { if (inputs[i]) inputs[i].value = val; });
-        }
+      if (!k.startsWith('meal_')) return;
+      const mealKey = k.replace('meal_','');
+      const list = document.querySelector('[data-meal="' + mealKey + '"]');
+      if (!list) return;
+      if (v && typeof v === 'object' && !Array.isArray(v)) {
+        // v5 format: { foodKey: qty }
+        list.querySelectorAll('.ingr').forEach(ingr => {
+          const fk = ingr.dataset.food;
+          if (fk && v[fk] !== undefined) ingr.querySelector('.ingr-g').value = v[fk];
+        });
+      } else if (Array.isArray(v)) {
+        // v4 legacy: positional
+        const inputs = list.querySelectorAll('.ingr-g');
+        v.forEach((val, i) => { if (inputs[i]) inputs[i].value = val; });
       }
     });
     // Checks
@@ -1234,9 +1342,10 @@ function loadAll() {
     if (mn && data.note) { mn.value = data.note; updateChars(); }
     // Progress
     if (data.progress) data.progress.forEach(e => addProgEntry(e.vals));
-    // Custom meals
     if (data.customMeals) { customMeals = data.customMeals; renderCustomMeals(); }
-  } catch(e) {}
+    if (data.mealSectionNames) { mealSectionNames = data.mealSectionNames; applyMealSectionNames(); }
+    if (data.macroTargets) { macroTargets = data.macroTargets; }
+  } catch(e) { console.error('loadAll', e); }
 }
 
 // ═══════════════════════════════════════
@@ -1244,10 +1353,144 @@ function loadAll() {
 // ═══════════════════════════════════════
 window.addEventListener('load', () => {
   renderFoodDB();
+  initMealEditPanels(); // MUST come before loadAll so extra inputs exist
   loadAll();
-  initMealEditPanels();
+  applyMealSectionNames();
+  renderTargets();
   calcAll();
+  updateSidebarPeso();
 });
+// ═══════════════════════════════════════
+// BF% GUIDE TOGGLE
+// ═══════════════════════════════════════
+function toggleBFGuide(btn) {
+  var guide = document.getElementById('bf-guide');
+  var open = guide.style.display === 'none';
+  guide.style.display = open ? 'block' : 'none';
+  btn.innerHTML = open ? '&#x2716; Chiudi guida BF%' : '&#x1F4CA; Come stimare il tuo BF%';
+}
+
+// ═══════════════════════════════════════
+// MEAL SECTION RENAME
+// ═══════════════════════════════════════
+var currentRenameEl = null;
+
+function renameMealSection(el) {
+  currentRenameEl = el;
+  var inp = document.getElementById('rename-input');
+  inp.value = el.textContent;
+  document.getElementById('rename-modal').style.display = 'flex';
+  setTimeout(function() { inp.focus(); inp.select(); }, 50);
+}
+
+function closeRenameModal() {
+  document.getElementById('rename-modal').style.display = 'none';
+  currentRenameEl = null;
+}
+
+function saveRenameModal() {
+  if (!currentRenameEl) return;
+  var val = document.getElementById('rename-input').value.trim();
+  if (!val) return;
+  var sectionId = currentRenameEl.dataset.section;
+  currentRenameEl.textContent = val;
+  mealSectionNames[sectionId] = val;
+  closeRenameModal();
+  triggerSave();
+}
+
+function applyMealSectionNames() {
+  Object.entries(mealSectionNames).forEach(function(pair) {
+    var sectionId = pair[0], name = pair[1];
+    var el = document.querySelector('[data-section="' + sectionId + '"]');
+    if (el) el.textContent = name;
+  });
+}
+
+// Keyboard shortcuts for modals
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    if (document.getElementById('rename-modal').style.display === 'flex') saveRenameModal();
+    if (document.getElementById('target-modal').style.display === 'flex') saveTargetModal();
+  }
+  if (e.key === 'Escape') { closeRenameModal(); closeTargetModal(); }
+});
+
+// ═══════════════════════════════════════
+// MACRO TARGETS — EDITOR
+// ═══════════════════════════════════════
+var targetPresets = {
+  'cut-lun':   { kcal: 2050, p: 190, c: 200, f: 45 },
+  'cut-gio':   { kcal: 2050, p: 190, c: 200, f: 45 },
+  'cut-rest':  { kcal: 1650, p: 170, c: 130, f: 40 },
+  'maint-lun': { kcal: 2400, p: 185, c: 270, f: 55 },
+  'maint-rest':{ kcal: 2000, p: 180, c: 200, f: 50 },
+  'bulk-lun':  { kcal: 2700, p: 200, c: 330, f: 65 },
+  'bulk-rest': { kcal: 2200, p: 195, c: 240, f: 55 }
+};
+
+var currentTargetDay = null;
+
+function openTargetModal(day) {
+  currentTargetDay = day;
+  var labels = { lun: 'Lun/Mar — WO 14:00', gio: 'Gio — WO 11:00', rest: 'Riposo / Padel' };
+  document.getElementById('target-modal-title').textContent = 'Target: ' + (labels[day] || day);
+  var t = macroTargets[day] || { kcal: 2000, p: 180, c: 200, f: 50 };
+  document.getElementById('tm-kcal').value = t.kcal;
+  document.getElementById('tm-p').value = t.p;
+  document.getElementById('tm-c').value = t.c;
+  document.getElementById('tm-f').value = t.f;
+  document.getElementById('tm-preset').value = '';
+  document.getElementById('target-modal').style.display = 'flex';
+}
+
+function closeTargetModal() {
+  document.getElementById('target-modal').style.display = 'none';
+  currentTargetDay = null;
+}
+
+function applyTargetPreset() {
+  var key = document.getElementById('tm-preset').value;
+  if (!key || !targetPresets[key]) return;
+  var p = targetPresets[key];
+  document.getElementById('tm-kcal').value = p.kcal;
+  document.getElementById('tm-p').value = p.p;
+  document.getElementById('tm-c').value = p.c;
+  document.getElementById('tm-f').value = p.f;
+}
+
+function saveTargetModal() {
+  if (!currentTargetDay) return;
+  macroTargets[currentTargetDay] = {
+    kcal: parseInt(document.getElementById('tm-kcal').value) || 2000,
+    p:    parseInt(document.getElementById('tm-p').value)    || 0,
+    c:    parseInt(document.getElementById('tm-c').value)    || 0,
+    f:    parseInt(document.getElementById('tm-f').value)    || 0
+  };
+  renderTargets();
+  closeTargetModal();
+  triggerSave();
+}
+
+function renderTargets() {
+  ['lun', 'gio', 'rest'].forEach(function(day) {
+    var el = document.getElementById('target-' + day + '-display');
+    if (!el) return;
+    var t = macroTargets[day] || { kcal: '—', p: '—', c: '—', f: '—' };
+    var kcalColor = day === 'rest' ? 'var(--a)' : 'var(--g)';
+    el.innerHTML = '<span style="color:' + kcalColor + ';font-family:var(--head);font-size:13px;">' + t.kcal + '</span> kcal<br>' +
+      '<span style="color:var(--b);">~' + t.p + '</span>g prot &nbsp;&middot;&nbsp; ' +
+      '<span style="color:var(--a);">~' + t.c + '</span>g carbs &nbsp;&middot;&nbsp; ' +
+      '<span style="color:var(--r);">~' + t.f + '</span>g grassi';
+  });
+}
+
+// Close modals on backdrop click
+window.addEventListener('click', function(e) {
+  if (e.target.id === 'target-modal') closeTargetModal();
+  if (e.target.id === 'rename-modal') closeRenameModal();
+});
+
 </script>
 </body>
 </html>
