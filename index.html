@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Piano — Matteo</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;600&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:#0c0c0a;--bg2:#131311;--bg3:#1a1a17;--bg4:#222220;--bg5:#2a2a27;
@@ -15,30 +15,47 @@
   --a:#c8a03c;--ad:#2a2010;--aa:#d4b96a;
   --r:#c06060;--rd:#2e1a1a;--ra:#d48080;
   --tl:#4cb8a4;--tld:#152e28;--tla:#80cfc0;
+  /* 80s accent palette */
+  --neon-pink:#ff2d78;--neon-cyan:#00e5ff;--neon-purple:#b44fff;--neon-yellow:#ffe600;
+  --neon-pink-dim:rgba(255,45,120,0.12);--neon-cyan-dim:rgba(0,229,255,0.10);
+  --scanline:rgba(0,0,0,0.18);
   --mono:'DM Mono',monospace;
   --head:'Syne',sans-serif;
+  --retro:'VT323',monospace;
   --rad:10px;--rad-s:6px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{font-size:14px;}
 body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden;}
 
+/* ── 80s SCANLINES overlay ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,var(--scanline) 0px,var(--scanline) 1px,transparent 1px,transparent 3px);
+  opacity:0.35;
+}
+
+/* ── 80s GLOW keyframes ── */
+@keyframes neon-pulse{0%,100%{text-shadow:0 0 6px currentColor,0 0 14px currentColor;}50%{text-shadow:0 0 3px currentColor,0 0 6px currentColor;}}
+@keyframes border-glow{0%,100%{box-shadow:0 0 4px var(--neon-cyan),inset 0 0 4px rgba(0,229,255,0.04);}50%{box-shadow:0 0 2px var(--neon-cyan),inset 0 0 2px rgba(0,229,255,0.02);}}
+@keyframes crt-flicker{0%,100%{opacity:1;}92%{opacity:.97;}93%{opacity:.93;}94%{opacity:.98;}}
+
 /* ── LAYOUT ── */
 .app{display:grid;grid-template-columns:200px 1fr;min-height:100vh;}
 
 /* ── SIDEBAR ── */
 .sidebar{background:var(--bg2);border-right:1px solid var(--b1);padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:0;}
-.sidebar-brand{padding:0 16px 20px;border-bottom:1px solid var(--b1);margin-bottom:12px;}
-.sidebar-brand .name{font-family:var(--head);font-size:15px;font-weight:600;color:var(--t1);letter-spacing:-0.01em;}
-.sidebar-brand .sub{font-size:10px;color:var(--t3);margin-top:2px;letter-spacing:0.04em;}
+.sidebar-brand{padding:0 16px 20px;border-bottom:1px solid rgba(0,229,255,0.15);margin-bottom:12px;}
+.sidebar-brand .name{font-family:var(--retro);font-size:20px;font-weight:400;color:var(--neon-cyan);letter-spacing:0.04em;animation:neon-pulse 3s ease-in-out infinite;text-shadow:0 0 8px var(--neon-cyan),0 0 20px rgba(0,229,255,0.4);}
+.sidebar-brand .sub{font-family:var(--retro);font-size:14px;color:var(--neon-pink);margin-top:2px;letter-spacing:0.06em;text-shadow:0 0 6px var(--neon-pink);opacity:0.8;}
 .nav-group{padding:0 8px;margin-bottom:16px;}
-.nav-group-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--t3);padding:0 8px;margin-bottom:4px;}
+.nav-group-label{font-family:var(--retro);font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:var(--neon-purple);padding:0 8px;margin-bottom:4px;text-shadow:0 0 6px var(--neon-purple);opacity:0.8;}
 .nav-btn{display:flex;align-items:center;gap:8px;width:100%;padding:7px 10px;border-radius:var(--rad-s);border:none;background:transparent;color:var(--t2);font-family:var(--mono);font-size:11px;cursor:pointer;text-align:left;transition:all .15s;white-space:nowrap;}
-.nav-btn:hover{background:var(--bg3);color:var(--t1);}
-.nav-btn.active{background:var(--bg4);color:var(--t1);}
+.nav-btn:hover{background:var(--neon-cyan-dim);color:var(--neon-cyan);text-shadow:0 0 6px var(--neon-cyan);}
+.nav-btn.active{background:var(--neon-pink-dim);color:var(--neon-pink);border-left:2px solid var(--neon-pink);text-shadow:0 0 5px var(--neon-pink);}
 .nav-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
-.sidebar-stats{margin-top:auto;padding:16px;border-top:1px solid var(--b1);font-size:10px;color:var(--t3);line-height:2;}
-.sidebar-stats strong{color:var(--t2);}
+.sidebar-stats{margin-top:auto;padding:16px;border-top:1px solid rgba(0,229,255,0.12);font-family:var(--retro);font-size:14px;color:var(--t3);line-height:2;}
+.sidebar-stats strong{color:var(--neon-cyan);text-shadow:0 0 5px var(--neon-cyan);font-weight:400;}
 
 /* ── MAIN ── */
 .main{padding:28px 32px;max-width:860px;}
@@ -46,34 +63,37 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
 .page.active{display:block;}
 
 /* ── PAGE HEADER ── */
-.ph{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--b1);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-.ph h2{font-family:var(--head);font-size:22px;font-weight:500;letter-spacing:-0.02em;}
+.ph{margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid rgba(0,229,255,0.15);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.ph h2{font-family:var(--retro);font-size:28px;font-weight:400;letter-spacing:0.04em;color:var(--neon-cyan);text-shadow:0 0 10px var(--neon-cyan),0 0 22px rgba(0,229,255,0.3);}
 .ph p{font-size:11px;color:var(--t3);margin-top:3px;}
 .save-pill{font-size:10px;padding:4px 12px;border-radius:40px;border:1px solid var(--b1);color:var(--t3);display:flex;align-items:center;gap:5px;transition:all .3s;white-space:nowrap;}
-.save-pill.saved{color:var(--g);border-color:var(--gd);}
+.save-pill.saved{color:var(--neon-cyan);border-color:rgba(0,229,255,0.3);text-shadow:0 0 6px var(--neon-cyan);}
 .save-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
 
 /* ── DAY TABS ── */
 .day-tabs{display:flex;gap:5px;margin-bottom:20px;flex-wrap:wrap;}
-.dtab{font-family:var(--mono);font-size:10px;padding:5px 13px;border-radius:40px;border:1px solid var(--b2);background:transparent;color:var(--t2);cursor:pointer;transition:all .15s;letter-spacing:0.02em;}
-.dtab:hover{color:var(--t1);border-color:var(--b3);}
-.dtab.active{background:var(--t1);color:var(--bg);border-color:var(--t1);}
+.dtab{font-family:var(--retro);font-size:13px;padding:5px 15px;border-radius:4px;border:1px solid rgba(0,229,255,0.25);background:transparent;color:var(--t2);cursor:pointer;transition:all .15s;letter-spacing:0.04em;}
+.dtab:hover{color:var(--neon-cyan);border-color:var(--neon-cyan);text-shadow:0 0 6px var(--neon-cyan);}
+.dtab.active{background:rgba(0,229,255,0.1);color:var(--neon-cyan);border-color:var(--neon-cyan);text-shadow:0 0 8px var(--neon-cyan);box-shadow:0 0 8px rgba(0,229,255,0.2);}
 
 /* ── MACRO STRIP ── */
 .mstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;}
-.mcard{background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad);padding:12px 14px;text-align:center;}
-.mval{font-family:var(--head);font-size:21px;font-weight:500;display:block;line-height:1.1;}
-.mlbl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px;display:block;}
+.mcard{background:var(--bg3);border:1px solid rgba(0,229,255,0.12);border-radius:var(--rad);padding:12px 14px;text-align:center;position:relative;overflow:hidden;}
+.mcard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,229,255,0.03) 0%,transparent 60%);pointer-events:none;}
+.mval{font-family:var(--retro);font-size:26px;font-weight:400;display:block;line-height:1.1;}
+.mlbl{font-family:var(--retro);font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:0.06em;margin-top:3px;display:block;}
 
 /* ── MEAL CARD ── */
 .meal{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);margin-bottom:8px;overflow:hidden;transition:border-color .15s;}
-.meal:hover{border-color:var(--b2);}
+.meal:hover{border-color:rgba(0,229,255,0.2);}
 .meal.hi{border-color:rgba(126,201,138,0.2);}
+.meal.hi:hover{border-color:rgba(0,229,255,0.3);}
 .meal-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none;}
-.meal-time{font-size:10px;color:var(--t3);min-width:76px;flex-shrink:0;}
-.meal-name{font-family:var(--head);font-size:13px;font-weight:500;flex:1;}
+.meal-time{font-family:var(--retro);font-size:14px;color:var(--neon-yellow);min-width:76px;flex-shrink:0;text-shadow:0 0 5px rgba(255,230,0,0.5);}
+.meal-name{font-family:var(--retro);font-size:17px;font-weight:400;flex:1;letter-spacing:0.04em;cursor:pointer;}
+.meal-name:hover{color:var(--neon-pink);text-shadow:0 0 6px var(--neon-pink);}
 .meal-kcal{font-size:11px;color:var(--t2);flex-shrink:0;}
-.badge{font-size:9px;padding:2px 8px;border-radius:40px;border:1px solid;flex-shrink:0;letter-spacing:0.03em;}
+.badge{font-family:var(--retro);font-size:11px;padding:2px 8px;border-radius:3px;border:1px solid;flex-shrink:0;letter-spacing:0.04em;}
 .bg-g{color:var(--g);border-color:var(--gd);background:var(--gd);}
 .bg-t{color:var(--tl);border-color:var(--tld);background:var(--tld);}
 .bg-a{color:var(--a);border-color:var(--ad);background:var(--ad);}
@@ -87,14 +107,22 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
 
 /* ── INGREDIENT ROW ── */
 .ingr-list{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;}
-.ingr{display:grid;grid-template-columns:1fr 60px 40px;align-items:center;gap:8px;padding:6px 10px;background:var(--bg3);border-radius:var(--rad-s);border:1px solid transparent;transition:border-color .15s;}
+.ingr{display:grid;grid-template-columns:1fr 60px 40px 28px;align-items:center;gap:8px;padding:6px 10px;background:var(--bg3);border-radius:var(--rad-s);border:1px solid transparent;transition:border-color .15s;}
 .ingr:hover{border-color:var(--b1);}
+.ingr.ingr-disabled{opacity:0.35;}
+.ingr.ingr-disabled .ingr-g{pointer-events:none;}
+.ingr.ingr-disabled .ingr-name,.ingr.ingr-disabled .ingr-note{color:var(--t3);}
 .ingr-name{font-size:12px;color:var(--t2);}
 .ingr-note{font-size:10px;color:var(--t3);}
 .ingr-g{width:100%;background:var(--bg4);border:1px solid var(--b1);border-radius:4px;padding:4px 6px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;text-align:right;transition:border-color .15s;-moz-appearance:textfield;}
 .ingr-g::-webkit-outer-spin-button,.ingr-g::-webkit-inner-spin-button{-webkit-appearance:none;}
-.ingr-g:focus{border-color:var(--b3);}
+.ingr-g:focus{border-color:var(--neon-cyan);box-shadow:0 0 4px rgba(0,229,255,0.3);}
 .ingr-unit{font-size:10px;color:var(--t3);}
+
+/* toggle flag */
+.ingr-toggle{width:22px;height:22px;border-radius:3px;border:1px solid var(--b2);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:11px;color:var(--t3);padding:0;}
+.ingr-toggle.active{background:rgba(0,229,255,0.12);border-color:var(--neon-cyan);color:var(--neon-cyan);box-shadow:0 0 5px rgba(0,229,255,0.25);}
+.ingr-toggle:hover{border-color:var(--neon-pink);color:var(--neon-pink);}
 
 .opt-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);margin-bottom:6px;margin-top:10px;}
 .opt-label:first-child{margin-top:0;}
@@ -105,10 +133,10 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
 .meal-macro-row strong{color:var(--t1);}
 
 /* ── TOTAL BAR ── */
-.tot{background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad);padding:12px 16px;display:flex;gap:20px;flex-wrap:wrap;margin-top:6px;align-items:center;}
+.tot{background:var(--bg3);border:1px solid rgba(0,229,255,0.15);border-radius:var(--rad);padding:12px 16px;display:flex;gap:20px;flex-wrap:wrap;margin-top:6px;align-items:center;}
 .tot-item{font-size:11px;color:var(--t2);}
-.tot-item strong{color:var(--t1);font-size:14px;font-family:var(--head);}
-.tot-item.main strong{color:var(--g);font-size:16px;}
+.tot-item strong{color:var(--t1);font-family:var(--retro);font-size:18px;}
+.tot-item.main strong{color:var(--neon-cyan);font-size:22px;text-shadow:0 0 8px var(--neon-cyan);}
 
 /* ── INFO BOX ── */
 .ibox{border-radius:var(--rad);padding:11px 14px;font-size:11px;line-height:1.7;margin-bottom:12px;border-left:2px solid;}
@@ -181,15 +209,24 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
 
 /* ── CHECKLIST ── */
 .chk{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad-s);margin-bottom:5px;cursor:pointer;transition:all .15s;user-select:none;}
-.chk:hover{border-color:var(--b2);}
-.chk.done{opacity:.4;}
-.chk.done .chkbox{background:var(--g);border-color:var(--g);}
-.chkbox{width:15px;height:15px;border-radius:3px;border:1px solid var(--b2);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;}
+.chk:hover{border-color:rgba(0,229,255,0.2);}
+.chk.done{opacity:.45;}
+.chk.done .chkbox{background:var(--neon-cyan);border-color:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);}
+.chkbox{width:15px;height:15px;border-radius:3px;border:1px solid rgba(0,229,255,0.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all .15s;}
 .chk-text{font-size:12px;flex:1;}
 .chk-sub{font-size:10px;color:var(--t3);margin-top:2px;}
 
+/* ── CHECKLIST EDIT ── */
+.chk-edit-mode .chk{cursor:default;}
+.chk-item-wrap{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;}
+.chk-del-btn{background:transparent;border:none;color:var(--t3);font-size:15px;cursor:pointer;padding:0 3px;transition:color .15s;line-height:1;margin-top:12px;flex-shrink:0;}
+.chk-del-btn:hover{color:var(--neon-pink);}
+.chk-add-row{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--b1);}
+.chk-add-row input{background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:6px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;}
+.chk-add-row input::placeholder{color:var(--t3);}
+
 /* ── SECTION TITLE ── */
-.st{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--t3);margin:20px 0 8px;}
+.st{font-family:var(--retro);font-size:14px;letter-spacing:0.12em;text-transform:uppercase;color:var(--neon-purple);margin:20px 0 8px;text-shadow:0 0 5px var(--neon-purple);opacity:0.9;}
 
 /* ── PESI TABLE ── */
 .pesi-wrap{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;margin-bottom:16px;}
@@ -214,6 +251,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
   .pesi-cell:last-child{display:none;}
   .add-ingr-row{grid-template-columns:1fr 60px 44px auto;}
   .custom-ingr-row{grid-template-columns:1fr 55px 36px 24px;}
+  .ingr{grid-template-columns:1fr 52px 32px 24px;}
 }
 @media(max-width:400px){
   .mstrip{grid-template-columns:repeat(2,1fr);}
@@ -228,7 +266,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="name">@teoswitch</div>
-    <div class="sub">piano nutrizionale v4</div>
+    <div class="sub">PIANO v4.0</div>
   </div>
   <div class="nav-group">
     <div class="nav-group-label">Piano</div>
@@ -587,33 +625,19 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
 <div class="page" id="page-checklist">
   <div class="ph">
     <div><h2>Checklist</h2><p>spunta i pasti durante la giornata</p></div>
-    <button class="btn-sm" onclick="resetChecks()">↺ reset</button>
+    <div style="display:flex;gap:6px;">
+      <button class="btn-sm" id="chk-edit-btn" onclick="toggleChecklistEdit()">✎ modifica</button>
+      <button class="btn-sm" onclick="resetChecks()">↺ reset</button>
+    </div>
   </div>
   <div class="day-tabs">
     <button class="dtab active" onclick="showCheckDay('cwo14',this)">WO ore 14</button>
     <button class="dtab" onclick="showCheckDay('cwo11',this)">WO ore 11</button>
     <button class="dtab" onclick="showCheckDay('criposo',this)">Riposo</button>
   </div>
-  <div id="cwo14">
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Pre-workout ~13:30<div class="chk-sub">2 amaretti · ~160 kcal</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Post-workout ~15:30<div class="chk-sub">crema riso + whey + miele + soia · ~450 kcal</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Cena ~20:00<div class="chk-sub">proteina + carbs + verdure + olio</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Pre-nanna ~22:30<div class="chk-sub">150g Skyr + 150g Fage + miele + pistacchi + uvette · ~290 kcal</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Acqua 3–3.5 L<div class="chk-sub">+500 ml per ora di allenamento</div></div></div>
-  </div>
-  <div id="cwo11" style="display:none">
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Post-workout ~12:30<div class="chk-sub">crema riso + whey + miele + soia · basta fino alle 18</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Spuntino ~18:00 (opzionale)<div class="chk-sub">rice pudding / yogurt+BdA / mozzarella HP</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Cena ~20:00<div class="chk-sub">proteina + carbs + verdure + olio</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Pre-nanna ~22:30<div class="chk-sub">150g Skyr + 150g Fage + miele + pistacchi + uvette</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Acqua 3–3.5 L</div></div>
-  </div>
-  <div id="criposo" style="display:none">
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Pranzo ~12:30 (opzionale)<div class="chk-sub">yogurt / pudding / tonno / salta</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Cena ~20:00<div class="chk-sub">proteina + carbs + verdure · ~820-900 kcal</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Pre-nanna ~22:30<div class="chk-sub">150g Skyr + 150g Fage + miele + pistacchi + uvette</div></div></div>
-    <div class="chk" onclick="toggleChk(this)"><div class="chkbox"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="chk-text">Acqua 2.5–3 L<div class="chk-sub">+500 ml se padel</div></div></div>
-  </div>
+  <div id="cwo14"></div>
+  <div id="cwo11" style="display:none"></div>
+  <div id="criposo" style="display:none"></div>
 </div>
 
 <!-- ══════════════════════════════
@@ -631,12 +655,44 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
 ════════════════════════════════ -->
 <div class="page" id="page-fooddb">
   <div class="ph"><div><h2>Alimenti</h2><p>valori per 100g (o per unità dove indicato) · modificabili</p></div></div>
-  <div class="ibox ibox-a">Puoi modificare i valori se hai i dati precisi del prodotto che usi (es. la whey che compri tu). I valori vengono usati per tutti i calcoli.</div>
-  <div style="background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;">
+  <div class="ibox ibox-a">Modifica i valori nutritivi, rinomina gli alimenti o aggiungine di nuovi. I calcoli si aggiornano in tempo reale.</div>
+  <div style="background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;margin-bottom:12px;">
     <table class="db-table" id="food-db-table">
-      <thead><tr><th>Alimento</th><th>Unità</th><th>Kcal</th><th>Proteine</th><th>Carbs</th><th>Grassi</th></tr></thead>
+      <thead><tr><th>Alimento</th><th>Unità</th><th>Kcal</th><th>Proteine</th><th>Carbs</th><th>Grassi</th><th></th></tr></thead>
       <tbody id="db-tbody"></tbody>
     </table>
+  </div>
+  <div style="background:var(--bg2);border:1px solid rgba(0,229,255,0.15);border-radius:var(--rad);padding:16px;">
+    <div style="font-family:var(--retro);font-size:16px;color:var(--neon-cyan);margin-bottom:12px;text-shadow:0 0 6px var(--neon-cyan);">+ NUOVO ALIMENTO</div>
+    <div style="display:grid;grid-template-columns:1fr 60px 55px 55px 55px 55px auto;gap:6px;align-items:end;">
+      <div>
+        <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Nome</div>
+        <input type="text" id="new-food-name" placeholder="es. Avena" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Unità</div>
+        <select id="new-food-unit" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 6px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+          <option value="g">g</option><option value="pz">pz</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Kcal</div>
+        <input type="number" id="new-food-kcal" placeholder="100" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--b);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Prot g</div>
+        <input type="number" id="new-food-p" placeholder="0" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--a);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Carbs g</div>
+        <input type="number" id="new-food-c" placeholder="0" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+      </div>
+      <div>
+        <div style="font-size:9px;color:var(--r);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;">Grassi g</div>
+        <input type="number" id="new-food-f" placeholder="0" style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:var(--rad-s);padding:7px 9px;font-family:var(--mono);font-size:11px;color:var(--t1);outline:none;">
+      </div>
+      <button class="btn-sm" onclick="addNewFood()" style="background:var(--gd);color:var(--g);border-color:var(--g);white-space:nowrap;">+ aggiungi</button>
+    </div>
   </div>
 </div>
 
@@ -774,7 +830,7 @@ body{font-family:var(--mono);background:var(--bg);color:var(--t1);min-height:100
 <div id="rename-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:1000;align-items:center;justify-content:center;">
   <div style="background:var(--bg2);border:1px solid var(--b2);border-radius:var(--rad);padding:24px;width:300px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
     <div style="font-family:var(--head);font-size:15px;margin-bottom:6px;">Rinomina sezione</div>
-    <div style="font-size:10px;color:var(--t3);margin-bottom:14px;">Doppio click sul nome del pasto per rinominare</div>
+    <div style="font-size:10px;color:var(--t3);margin-bottom:14px;">Tieni premuto sul nome del pasto per rinominare (o doppio click su PC)</div>
     <input type="text" id="rename-input" style="width:100%;background:var(--bg3);border:1px solid var(--b3);border-radius:var(--rad-s);padding:9px 12px;font-family:var(--mono);font-size:13px;color:var(--t1);outline:none;margin-bottom:16px;">
     <div style="display:flex;gap:8px;justify-content:flex-end;">
       <button class="btn-sm" onclick="closeRenameModal()">Annulla</button>
@@ -842,6 +898,7 @@ function getMacros(foodKey, qty) {
 function calcMealMacros(listEl) {
   let tot = {kcal:0,p:0,c:0,f:0};
   listEl.querySelectorAll('.ingr').forEach(ingr => {
+    if (ingr.classList.contains('ingr-disabled')) return; // skip toggled-off
     const fk = ingr.dataset.food;
     const qty = parseFloat(ingr.querySelector('.ingr-g').value) || 0;
     const m = getMacros(fk, qty);
@@ -915,6 +972,7 @@ function showDay(day, btn) {
 }
 
 function showCheckDay(id, btn) {
+  currentCheckDay = id;
   ['cwo14','cwo11','criposo'].forEach(d => {
     const el = document.getElementById(d);
     if (el) el.style.display = 'none';
@@ -938,10 +996,144 @@ function toggleMeal(head) {
 }
 
 // ═══════════════════════════════════════
-// CHECKLIST
+// CHECKLIST — data-driven with edit/add/delete
 // ═══════════════════════════════════════
+var defaultChecklistData = {
+  cwo14: [
+    {text:'Pre-workout ~13:30', sub:'2 amaretti · ~160 kcal'},
+    {text:'Post-workout ~15:30', sub:'crema riso + whey + miele + soia · ~450 kcal'},
+    {text:'Cena ~20:00', sub:'proteina + carbs + verdure + olio'},
+    {text:'Pre-nanna ~22:30', sub:'150g Skyr + 150g Fage + miele + pistacchi + uvette · ~290 kcal'},
+    {text:'Acqua 3–3.5 L', sub:'+500 ml per ora di allenamento'}
+  ],
+  cwo11: [
+    {text:'Post-workout ~12:30', sub:'crema riso + whey + miele + soia · basta fino alle 18'},
+    {text:'Spuntino ~18:00 (opzionale)', sub:'rice pudding / yogurt+BdA / mozzarella HP'},
+    {text:'Cena ~20:00', sub:'proteina + carbs + verdure + olio'},
+    {text:'Pre-nanna ~22:30', sub:'150g Skyr + 150g Fage + miele + pistacchi + uvette'},
+    {text:'Acqua 3–3.5 L', sub:''}
+  ],
+  criposo: [
+    {text:'Pranzo ~12:30 (opzionale)', sub:'yogurt / pudding / tonno / salta'},
+    {text:'Cena ~20:00', sub:'proteina + carbs + verdure · ~820-900 kcal'},
+    {text:'Pre-nanna ~22:30', sub:'150g Skyr + 150g Fage + miele + pistacchi + uvette'},
+    {text:'Acqua 2.5–3 L', sub:'+500 ml se padel'}
+  ]
+};
+
+var checklistData = JSON.parse(localStorage.getItem('checklistData_v1') || 'null') || JSON.parse(JSON.stringify(defaultChecklistData));
+var checklistChecked = {}; // { 'cwo14-0': true, ... }
+var checklistEditMode = false;
+var currentCheckDay = 'cwo14';
+
+function saveChecklistData() {
+  localStorage.setItem('checklistData_v1', JSON.stringify(checklistData));
+  triggerSave();
+}
+
+function renderChecklist(dayId) {
+  const container = document.getElementById(dayId);
+  if (!container) return;
+  const items = checklistData[dayId] || [];
+  const svg = `<svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  
+  let html = '';
+  items.forEach((item, i) => {
+    const key = dayId + '-' + i;
+    const isDone = checklistChecked[key] ? ' done' : '';
+    if (checklistEditMode) {
+      html += `<div class="chk-item-wrap">
+        <div class="chk${isDone}" style="flex:1;cursor:default;">
+          <div class="chkbox">${svg}</div>
+          <div class="chk-text" style="flex:1;">
+            <input type="text" value="${item.text.replace(/"/g,'&quot;')}"
+              style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:4px;padding:3px 7px;font-family:var(--mono);font-size:12px;color:var(--t1);outline:none;margin-bottom:3px;"
+              onchange="updateChkItem('${dayId}',${i},'text',this.value)">
+            <input type="text" value="${(item.sub||'').replace(/"/g,'&quot;')}"
+              style="width:100%;background:var(--bg3);border:1px solid var(--b1);border-radius:4px;padding:3px 7px;font-family:var(--mono);font-size:10px;color:var(--t3);outline:none;"
+              placeholder="sottotitolo opzionale..."
+              onchange="updateChkItem('${dayId}',${i},'sub',this.value)">
+          </div>
+        </div>
+        <button class="chk-del-btn" onclick="removeChkItem('${dayId}',${i})">×</button>
+      </div>`;
+    } else {
+      html += `<div class="chk${isDone}" onclick="toggleChkById('${dayId}',${i})">
+        <div class="chkbox">${svg}</div>
+        <div class="chk-text">${item.text}${item.sub ? '<div class="chk-sub">'+item.sub+'</div>' : ''}</div>
+      </div>`;
+    }
+  });
+
+  if (checklistEditMode) {
+    html += `<div class="chk-add-row">
+      <input type="text" id="new-chk-text-${dayId}" placeholder="Testo voce...">
+      <input type="text" id="new-chk-sub-${dayId}" placeholder="Sottotitolo (opz.)">
+      <button class="btn-sm" onclick="addChkItem('${dayId}')" style="background:var(--gd);color:var(--g);border-color:var(--g);">+ add</button>
+    </div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function renderAllCheckDays() {
+  ['cwo14','cwo11','criposo'].forEach(d => renderChecklist(d));
+}
+
+function toggleChkById(dayId, idx) {
+  const key = dayId + '-' + idx;
+  checklistChecked[key] = !checklistChecked[key];
+  renderChecklist(dayId);
+  triggerSave();
+}
+
+function toggleChecklistEdit() {
+  checklistEditMode = !checklistEditMode;
+  const btn = document.getElementById('chk-edit-btn');
+  if (btn) btn.textContent = checklistEditMode ? '✓ fine' : '✎ modifica';
+  renderAllCheckDays();
+  // Re-show only current day
+  ['cwo14','cwo11','criposo'].forEach(d => {
+    const el = document.getElementById(d);
+    if (el) el.style.display = (d === currentCheckDay) ? 'block' : 'none';
+  });
+}
+
+function updateChkItem(dayId, idx, field, val) {
+  if (checklistData[dayId] && checklistData[dayId][idx]) {
+    checklistData[dayId][idx][field] = val;
+    saveChecklistData();
+  }
+}
+
+function removeChkItem(dayId, idx) {
+  if (checklistData[dayId]) {
+    checklistData[dayId].splice(idx, 1);
+    saveChecklistData();
+    renderChecklist(dayId);
+  }
+}
+
+function addChkItem(dayId) {
+  const textEl = document.getElementById('new-chk-text-' + dayId);
+  const subEl  = document.getElementById('new-chk-sub-' + dayId);
+  if (!textEl || !textEl.value.trim()) return;
+  if (!checklistData[dayId]) checklistData[dayId] = [];
+  checklistData[dayId].push({text: textEl.value.trim(), sub: subEl ? subEl.value.trim() : ''});
+  saveChecklistData();
+  renderChecklist(dayId);
+}
+
 function toggleChk(el) { el.classList.toggle('done'); triggerSave(); }
-function resetChecks() { document.querySelectorAll('.chk').forEach(c => c.classList.remove('done')); triggerSave(); }
+function resetChecks() {
+  checklistChecked = {};
+  renderAllCheckDays();
+  ['cwo14','cwo11','criposo'].forEach(d => {
+    const el = document.getElementById(d);
+    if (el) el.style.display = (d === currentCheckDay) ? 'block' : 'none';
+  });
+  triggerSave();
+}
 
 // ═══════════════════════════════════════
 // PROGRESS
@@ -985,17 +1177,61 @@ function renderFoodDB() {
   tbody.innerHTML = '';
   Object.entries(foods).forEach(([key, f]) => {
     const tr = document.createElement('tr');
+    tr.dataset.key = key;
     tr.innerHTML = `
-      <td>${f.name}</td>
+      <td>
+        <input type="text" value="${f.name}" 
+          style="width:100%;background:transparent;border:none;outline:none;font-family:var(--mono);font-size:11px;color:var(--t1);cursor:text;"
+          onchange="updateFoodName('${key}',this.value)"
+          onfocus="this.style.background='var(--bg3)';this.style.borderRadius='4px';this.style.padding='3px 6px'"
+          onblur="this.style.background='transparent';this.style.borderRadius='';this.style.padding=''">
+      </td>
       <td style="color:var(--t3)">${f.unit === 'pz' ? 'per pz' : 'per 100g'}</td>
       <td><input type="number" step="1" value="${r(f.kcal)}" onchange="updateFood('${key}','kcal',this.value)"></td>
       <td><input type="number" step="0.1" value="${r1(f.p)}" onchange="updateFood('${key}','p',this.value)"></td>
       <td><input type="number" step="0.1" value="${r1(f.c)}" onchange="updateFood('${key}','c',this.value)"></td>
       <td><input type="number" step="0.1" value="${r1(f.f)}" onchange="updateFood('${key}','f',this.value)"></td>
+      <td><button class="del-btn" onclick="deleteFood('${key}')" style="font-size:14px;color:var(--t3);" title="Elimina">×</button></td>
     `;
     tbody.appendChild(tr);
   });
 }
+
+function updateFoodName(key, val) {
+  if (!val.trim()) return;
+  if (foods[key]) { foods[key].name = val.trim(); }
+  localStorage.setItem('foods_v4', JSON.stringify(foods));
+  calcAll();
+}
+
+function deleteFood(key) {
+  if (!confirm(`Eliminare "${foods[key]?.name}"?`)) return;
+  delete foods[key];
+  renderFoodDB();
+  calcAll();
+  localStorage.setItem('foods_v4', JSON.stringify(foods));
+}
+
+function addNewFood() {
+  const name = document.getElementById('new-food-name').value.trim();
+  const unit = document.getElementById('new-food-unit').value;
+  const kcal = parseFloat(document.getElementById('new-food-kcal').value) || 0;
+  const p    = parseFloat(document.getElementById('new-food-p').value) || 0;
+  const c    = parseFloat(document.getElementById('new-food-c').value) || 0;
+  const f    = parseFloat(document.getElementById('new-food-f').value) || 0;
+  if (!name) { alert('Inserisci il nome dell\'alimento'); return; }
+  // generate a key
+  const key = 'custom-' + name.toLowerCase().replace(/[^a-z0-9]/g,'-').replace(/-+/g,'-') + '-' + Date.now().toString(36);
+  foods[key] = {name, unit, kcal, p, c, f};
+  renderFoodDB();
+  calcAll();
+  localStorage.setItem('foods_v4', JSON.stringify(foods));
+  // clear inputs
+  ['new-food-name','new-food-kcal','new-food-p','new-food-c','new-food-f'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
 function updateFood(key, macro, val) {
   if (foods[key]) { foods[key][macro] = parseFloat(val) || 0; }
   calcAll();
@@ -1171,8 +1407,20 @@ function buildIngrRow(foodKey, foodName, qty, unit, listEl, isExtra) {
   if (isExtra) div.dataset.extra = '1';
   div.innerHTML = `<div><div class="ingr-name">${foodName}</div></div>
     <input type="number" class="ingr-g" value="${qty}" min="0" max="9999" onchange="calcAll()">
-    <span class="ingr-unit">${unit}</span>`;
+    <span class="ingr-unit">${unit}</span>
+    <button class="ingr-toggle active" title="Attivo/Disattiva" onclick="toggleIngrActive(this)">●</button>`;
   return div;
+}
+
+function toggleIngrActive(btn) {
+  // stop propagation so it doesn't trigger meal open/close
+  event.stopPropagation();
+  const ingr = btn.closest('.ingr');
+  const input = ingr.querySelector('.ingr-g');
+  const isActive = btn.classList.toggle('active');
+  ingr.classList.toggle('ingr-disabled', !isActive);
+  input.disabled = !isActive;
+  calcAll();
 }
 
 function addIngrToMeal(listId) {
@@ -1235,14 +1483,49 @@ function removePianoIngr(listId, idx) {
 function initMealEditPanels() {
   document.querySelectorAll('[data-meal]').forEach(listEl => {
     const listId = listEl.dataset.meal;
-    if (listEl.dataset.day === undefined) return; // solo piano pasti (ha data-day)
+    if (listEl.dataset.day === undefined) return;
     if (!listEl.dataset.day) return;
+
+    // Add toggle buttons + fix cursor to existing static ingr rows
+    listEl.querySelectorAll('.ingr').forEach(ingr => {
+      // Add toggle if not already present
+      if (!ingr.querySelector('.ingr-toggle')) {
+        const btn = document.createElement('button');
+        btn.className = 'ingr-toggle active';
+        btn.title = 'Attiva/Disattiva';
+        btn.textContent = '●';
+        btn.onclick = function() { toggleIngrActive(btn); };
+        ingr.appendChild(btn);
+      }
+      // Fix cursor position: always go to end on focus
+      const inp = ingr.querySelector('.ingr-g');
+      if (inp) {
+        inp.addEventListener('focus', function() {
+          const val = this.value;
+          try {
+            this.type = 'text';
+            this.setSelectionRange(val.length, val.length);
+            this.type = 'number';
+          } catch(err) {}
+        });
+      }
+    });
 
     // Ricarica extra ingredienti salvati
     const extras = mealExtraIngr[listId] || [];
     extras.forEach(ex => {
       const row = buildIngrRow(ex.key, ex.name, ex.qty, ex.unit, listEl, true);
       listEl.appendChild(row);
+      // fix cursor for extra row too
+      const inp = row.querySelector('.ingr-g');
+      if (inp) inp.addEventListener('focus', function() {
+        const val = this.value;
+        try {
+          this.type = 'text';
+          this.setSelectionRange(val.length, val.length);
+          this.type = 'number';
+        } catch(err) {}
+      });
     });
 
     // Crea bottone toggle + pannello edit sotto la meal-body
@@ -1266,6 +1549,9 @@ function initMealEditPanels() {
     mealBody.appendChild(toggleBtn);
     mealBody.appendChild(panel);
   });
+
+  // Init meal name long-press
+  initMealNameEvents();
 }
 
 // ═══════════════════════════════════════
@@ -1292,8 +1578,9 @@ function saveAll() {
       });
       data['meal_'+key] = ingrs;
     });
-    // Checklist
-    data.checks = Array.from(document.querySelectorAll('.chk')).map(c => c.classList.contains('done'));
+    // Checklist checked state
+    data.checklistChecked = checklistChecked;
+    data.checklistData = checklistData;
     // Notes
     const mn = document.getElementById('main-note');
     if (mn) data.note = mn.value;
@@ -1311,7 +1598,8 @@ function saveAll() {
 
 function loadAll() {
   try {
-    const raw = localStorage.getItem('piano_v4');
+    // Try v5 first, then v4
+    const raw = localStorage.getItem('piano_v5') || localStorage.getItem('piano_v4');
     if (!raw) return;
     const data = JSON.parse(raw);
     // Ingredients — restore by food-key (robust, position-independent)
@@ -1321,22 +1609,28 @@ function loadAll() {
       const list = document.querySelector('[data-meal="' + mealKey + '"]');
       if (!list) return;
       if (v && typeof v === 'object' && !Array.isArray(v)) {
-        // v5 format: { foodKey: qty }
         list.querySelectorAll('.ingr').forEach(ingr => {
           const fk = ingr.dataset.food;
           if (fk && v[fk] !== undefined) ingr.querySelector('.ingr-g').value = v[fk];
         });
       } else if (Array.isArray(v)) {
-        // v4 legacy: positional
         const inputs = list.querySelectorAll('.ingr-g');
         v.forEach((val, i) => { if (inputs[i]) inputs[i].value = val; });
       }
     });
-    // Checks
-    if (data.checks) {
-      const chks = document.querySelectorAll('.chk');
-      data.checks.forEach((done, i) => { if (chks[i] && done) chks[i].classList.add('done'); });
+    // Checklist
+    if (data.checklistChecked) { checklistChecked = data.checklistChecked; }
+    if (data.checklistData) { checklistData = data.checklistData; }
+    // Legacy checks fallback
+    if (!data.checklistChecked && data.checks) {
+      // migrate: ignore, start fresh
     }
+    renderAllCheckDays();
+    // Re-hide non-active checklist days
+    ['cwo14','cwo11','criposo'].forEach(d => {
+      const el = document.getElementById(d);
+      if (el) el.style.display = (d === currentCheckDay) ? 'block' : 'none';
+    });
     // Note
     const mn = document.getElementById('main-note');
     if (mn && data.note) { mn.value = data.note; updateChars(); }
@@ -1354,6 +1648,7 @@ function loadAll() {
 window.addEventListener('load', () => {
   renderFoodDB();
   initMealEditPanels(); // MUST come before loadAll so extra inputs exist
+  renderAllCheckDays(); // render checklist from data
   loadAll();
   applyMealSectionNames();
   renderTargets();
@@ -1371,9 +1666,35 @@ function toggleBFGuide(btn) {
 }
 
 // ═══════════════════════════════════════
-// MEAL SECTION RENAME
+// MEAL SECTION RENAME — long press (mobile) + dblclick (desktop)
 // ═══════════════════════════════════════
 var currentRenameEl = null;
+var longPressTimer = null;
+var LONG_PRESS_MS = 600;
+
+function initMealNameEvents() {
+  document.querySelectorAll('.meal-name[data-section]').forEach(function(el) {
+    // Desktop
+    el.addEventListener('dblclick', function(e) {
+      e.stopPropagation();
+      renameMealSection(el);
+    });
+    // Mobile long press
+    el.addEventListener('touchstart', function(e) {
+      longPressTimer = setTimeout(function() {
+        renameMealSection(el);
+        // light haptic if available
+        if (window.navigator && window.navigator.vibrate) navigator.vibrate(40);
+      }, LONG_PRESS_MS);
+    }, {passive:true});
+    el.addEventListener('touchend', function() {
+      clearTimeout(longPressTimer);
+    }, {passive:true});
+    el.addEventListener('touchmove', function() {
+      clearTimeout(longPressTimer);
+    }, {passive:true});
+  });
+}
 
 function renameMealSection(el) {
   currentRenameEl = el;
@@ -1415,6 +1736,23 @@ document.addEventListener('keydown', function(e) {
   }
   if (e.key === 'Escape') { closeRenameModal(); closeTargetModal(); }
 });
+
+// Global: move cursor to END when focusing any ingr-g input
+// type="number" doesn't support setSelectionRange → switch to text momentarily
+document.addEventListener('focus', function(e) {
+  if (e.target && e.target.classList && e.target.classList.contains('ingr-g')) {
+    const inp = e.target;
+    const val = inp.value;
+    try {
+      // Chrome/Edge: temporarily switch to text to allow cursor positioning
+      inp.type = 'text';
+      inp.setSelectionRange(val.length, val.length);
+      inp.type = 'number';
+    } catch(err) {
+      // Safari fallback: select-all then re-click to deselect at end — best effort
+    }
+  }
+}, true);
 
 // ═══════════════════════════════════════
 // MACRO TARGETS — EDITOR
