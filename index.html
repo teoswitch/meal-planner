@@ -1438,7 +1438,8 @@ function saveMealIngrState(listId, listEl) {
       key: ingr.dataset.food,
       name: ingr.querySelector('.ingr-name').textContent,
       qty: ingr.querySelector('.ingr-g').value,
-      unit: ingr.querySelector('.ingr-unit').textContent.trim()
+      unit: ingr.querySelector('.ingr-unit').textContent.trim(),
+      disabled: ingr.classList.contains('ingr-disabled')
     });
   });
   mealExtraIngr[listId] = extras;
@@ -1466,6 +1467,7 @@ function toggleIngrActive(btn) {
   ingr.classList.toggle('ingr-disabled', !isActive);
   input.disabled = !isActive;
   calcAll();
+  triggerSave();
 }
 
 function addIngrToMeal(listId) {
@@ -1560,6 +1562,14 @@ function initMealEditPanels() {
     const extras = mealExtraIngr[listId] || [];
     extras.forEach(ex => {
       const row = buildIngrRow(ex.key, ex.name, ex.qty, ex.unit, listEl, true);
+      // Ripristina stato disabled se era disattivato
+      if (ex.disabled) {
+        row.classList.add('ingr-disabled');
+        const inp = row.querySelector('.ingr-g');
+        const btn = row.querySelector('.ingr-toggle');
+        if (inp) inp.disabled = true;
+        if (btn) btn.classList.remove('active');
+      }
       listEl.appendChild(row);
       // fix cursor for extra row too
       const inp = row.querySelector('.ingr-g');
@@ -1617,11 +1627,16 @@ function saveAll() {
     document.querySelectorAll('[data-meal]').forEach(list => {
       const key = list.dataset.meal;
       const ingrs = {};
+      const disabled = [];
       list.querySelectorAll('.ingr').forEach(ingr => {
         const fk = ingr.dataset.food;
-        if (fk) ingrs[fk] = ingr.querySelector('.ingr-g').value;
+        if (fk) {
+          ingrs[fk] = ingr.querySelector('.ingr-g').value;
+          if (ingr.classList.contains('ingr-disabled')) disabled.push(fk);
+        }
       });
       data['meal_'+key] = ingrs;
+      data['meal_disabled_'+key] = disabled;
     });
     // Checklist checked state
     data.checklistChecked = checklistChecked;
@@ -1651,14 +1666,21 @@ function loadAll() {
     const data = JSON.parse(raw);
     // Ingredients — restore by food-key (robust, position-independent)
     Object.entries(data).forEach(([k, v]) => {
-      if (!k.startsWith('meal_')) return;
+      if (!k.startsWith('meal_') || k.startsWith('meal_disabled_')) return;
       const mealKey = k.replace('meal_','');
       const list = document.querySelector('[data-meal="' + mealKey + '"]');
       if (!list) return;
+      const disabledKeys = data['meal_disabled_' + mealKey] || [];
       if (v && typeof v === 'object' && !Array.isArray(v)) {
         list.querySelectorAll('.ingr').forEach(ingr => {
           const fk = ingr.dataset.food;
           if (fk && v[fk] !== undefined) ingr.querySelector('.ingr-g').value = v[fk];
+          if (fk && disabledKeys.includes(fk)) {
+            const btn = ingr.querySelector('.ingr-toggle');
+            ingr.classList.add('ingr-disabled');
+            ingr.querySelector('.ingr-g').disabled = true;
+            if (btn) btn.classList.remove('active');
+          }
         });
       } else if (Array.isArray(v)) {
         const inputs = list.querySelectorAll('.ingr-g');
