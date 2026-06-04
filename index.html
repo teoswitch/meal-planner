@@ -189,7 +189,15 @@ body::before{
 .del-ingr{background:transparent;border:none;color:var(--t3);font-size:14px;cursor:pointer;line-height:1;padding:0 2px;transition:color .15s;}
 .del-ingr:hover{color:var(--r);}
 
-/* ── FOOD DB PAGE ── */
+/* ── MEAL ADD / REMOVE ── */
+.meal-del-btn{position:absolute;top:10px;right:10px;background:transparent;border:none;color:var(--t3);font-size:13px;cursor:pointer;padding:2px 5px;border-radius:3px;transition:all .15s;font-family:var(--mono);line-height:1;opacity:0;}
+.meal:hover .meal-del-btn{opacity:1;}
+.meal-del-btn:hover{color:var(--neon-pink);background:rgba(255,45,120,0.1);text-shadow:0 0 6px var(--neon-pink);}
+.meal{position:relative;}
+.btn-add-meal-piano{width:100%;padding:10px;border-radius:var(--rad);border:1px dashed rgba(0,229,255,0.2);background:transparent;color:var(--t3);font-family:var(--retro);font-size:13px;cursor:pointer;transition:all .15s;margin-top:6px;margin-bottom:6px;letter-spacing:0.04em;}
+.btn-add-meal-piano:hover{border-color:rgba(0,229,255,0.5);color:var(--neon-cyan);text-shadow:0 0 6px var(--neon-cyan);}
+
+
 .db-table{width:100%;border-collapse:collapse;}
 .db-table th{text-align:left;padding:8px 10px;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--b1);font-weight:400;}
 .db-table td{padding:9px 10px;border-bottom:1px solid var(--b1);font-size:11px;color:var(--t2);}
@@ -246,6 +254,7 @@ body::before{
 .pesi-row.head .pesi-cell{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--b2);}
 .pesi-row:not(.head):hover .pesi-cell{background:var(--bg3);}
 .pesi-cell:first-child{color:var(--t1);}
+.pesi-cell.mult{color:var(--neon-cyan);font-family:var(--retro);font-size:13px;}
 
 /* ── RESPONSIVE ── */
 @media(max-width:680px){
@@ -328,7 +337,8 @@ body::before{
     </div>
 
     <!-- Pre-wo -->
-    <div class="meal">
+    <div class="meal" id="meal-lun-m1">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="lun-m1">~13:30</span>
         <span class="meal-name" data-section="lun-m1" ondblclick="renameMealSection(this)">Pre-workout</span>
@@ -351,7 +361,8 @@ body::before{
     </div>
 
     <!-- Post-wo -->
-    <div class="meal hi">
+    <div class="meal hi" id="meal-lun-m2">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="lun-m2">Post WO ~15:30</span>
         <span class="meal-name" data-section="lun-m2" ondblclick="renameMealSection(this)">Post-workout</span>
@@ -371,7 +382,8 @@ body::before{
     </div>
 
     <!-- Cena -->
-    <div class="meal">
+    <div class="meal" id="meal-lun-m3">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="lun-m3">~20:00</span>
         <span class="meal-name" data-section="lun-m3" ondblclick="renameMealSection(this)">Cena</span>
@@ -398,7 +410,8 @@ body::before{
     </div>
 
     <!-- Pre-nanna -->
-    <div class="meal hi">
+    <div class="meal hi" id="meal-lun-m4">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="lun-m4">~22:30</span>
         <span class="meal-name" data-section="lun-m4" ondblclick="renameMealSection(this)">Pre-nanna</span>
@@ -419,8 +432,9 @@ body::before{
       </div>
     </div>
 
+    <button class="btn-add-meal-piano" onclick="addPianoMeal('lun')">+ aggiungi pasto</button>
+
     <div class="tot">
-      <div class="tot-item main"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Totale giorno</div><strong id="lun-tot-kcal">—</strong> kcal</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Proteine</div><strong id="lun-tot-p">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Carbs</div><strong id="lun-tot-c">—</strong>g</div>
       <div class="tot-item"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Grassi</div><strong id="lun-tot-f">—</strong>g</div>
@@ -443,7 +457,8 @@ body::before{
       <div class="mcard"><span class="mval" style="color:var(--r)" id="gio-f">—</span><span class="mlbl">grassi g</span></div>
     </div>
 
-    <div class="meal hi">
+    <div class="meal hi" id="meal-gio-m1">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="gio-m1">Post WO ~12:30</span>
         <span class="meal-name" data-section="gio-m1" ondblclick="renameMealSection(this)">Post-workout</span>
@@ -463,7 +478,8 @@ body::before{
       </div>
     </div>
 
-    <div class="meal">
+    <div class="meal" id="meal-gio-m2">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="gio-m2">~18:00</span>
         <span class="meal-name" data-section="gio-m2" ondblclick="renameMealSection(this)">Spuntino pomeridiano</span>
@@ -483,7 +499,8 @@ body::before{
       </div>
     </div>
 
-    <div class="meal">
+    <div class="meal" id="meal-gio-m3">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="gio-m3">~20:00</span>
         <span class="meal-name" data-section="gio-m3" ondblclick="renameMealSection(this)">Cena</span>
@@ -505,7 +522,8 @@ body::before{
       </div>
     </div>
 
-    <div class="meal hi">
+    <div class="meal hi" id="meal-gio-m4">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="gio-m4">~22:30</span>
         <span class="meal-name" data-section="gio-m4" ondblclick="renameMealSection(this)">Pre-nanna</span>
@@ -524,6 +542,8 @@ body::before{
         <div class="meal-macro-row" id="gio-m4-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
       </div>
     </div>
+
+    <button class="btn-add-meal-piano" onclick="addPianoMeal('gio')">+ aggiungi pasto</button>
 
     <div class="tot">
       <div class="tot-item main"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Totale giorno</div><strong id="gio-tot-kcal">—</strong> kcal</div>
@@ -550,7 +570,8 @@ body::before{
       <div class="mcard"><span class="mval" style="color:var(--r)" id="rest-f">—</span><span class="mlbl">grassi g</span></div>
     </div>
 
-    <div class="meal">
+    <div class="meal" id="meal-rest-m1">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="rest-m1">~12:30</span>
         <span class="meal-name" data-section="rest-m1" ondblclick="renameMealSection(this)">Pranzo</span>
@@ -569,7 +590,8 @@ body::before{
       </div>
     </div>
 
-    <div class="meal">
+    <div class="meal" id="meal-rest-m2">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="rest-m2">~20:00</span>
         <span class="meal-name" data-section="rest-m2" ondblclick="renameMealSection(this)">Cena</span>
@@ -593,7 +615,8 @@ body::before{
       </div>
     </div>
 
-    <div class="meal hi">
+    <div class="meal hi" id="meal-rest-m3">
+      <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
       <div class="meal-head" onclick="toggleMeal(this)">
         <span class="meal-time" data-time="rest-m3">~22:30</span>
         <span class="meal-name" data-section="rest-m3" ondblclick="renameMealSection(this)">Pre-nanna</span>
@@ -612,6 +635,8 @@ body::before{
         <div class="meal-macro-row" id="rest-m3-macros"><span>P: <strong>—</strong></span><span>C: <strong>—</strong></span><span>G: <strong>—</strong></span></div>
       </div>
     </div>
+
+    <button class="btn-add-meal-piano" onclick="addPianoMeal('rest')">+ aggiungi pasto</button>
 
     <div class="tot">
       <div class="tot-item main"><div style="font-size:10px;color:var(--t3);margin-bottom:2px;">Totale giorno</div><strong id="rest-tot-kcal">—</strong> kcal</div>
@@ -711,25 +736,102 @@ body::before{
 ════════════════════════════════ -->
 <div class="page" id="page-pesi">
   <div class="ph"><div><h2>Guida pesi</h2><p>crudo vs cotto — per pesare in batch con la morosa</p></div></div>
-  <div class="ibox ibox-g"><strong>Batch cooking:</strong> cuoci tutto insieme e pesa il cotto. Dividi per porzioni. Es: 600g pollo crudo → ~462g cotti → 3 porzioni da ~154g cotti.</div>
+  <div class="ibox ibox-g"><strong>Batch cooking:</strong> cuoci tutto insieme e pesa il cotto. Dividi per porzioni. Es: 600g pollo crudo → ~462g cotti → 3 porzioni da ~154g cotti.<br><strong>Moltiplicatore:</strong> se hai già il cotto sul piatto, moltiplica per il fattore indicato per ottenere il peso crudo equivalente da inserire nell'app.</div>
   <div class="pesi-wrap">
-    <div class="pesi-row head"><div class="pesi-cell">Alimento</div><div class="pesi-cell">Crudo</div><div class="pesi-cell">Lessato</div><div class="pesi-cell">Forno/Piastra</div></div>
-    <div class="pesi-row"><div class="pesi-cell">Petto di pollo</div><div class="pesi-cell">200g</div><div class="pesi-cell">~165g</div><div class="pesi-cell">~154g</div></div>
-    <div class="pesi-row"><div class="pesi-cell">Petto di pollo</div><div class="pesi-cell">220g</div><div class="pesi-cell">~182g</div><div class="pesi-cell">~170g</div></div>
-    <div class="pesi-row"><div class="pesi-cell">Tacchino fesa</div><div class="pesi-cell">200g</div><div class="pesi-cell">~170g</div><div class="pesi-cell">~160g</div></div>
-    <div class="pesi-row"><div class="pesi-cell">Riso basmati</div><div class="pesi-cell">80g</div><div class="pesi-cell">~200g</div><div class="pesi-cell">—</div></div>
-    <div class="pesi-row"><div class="pesi-cell">Riso basmati</div><div class="pesi-cell">90g</div><div class="pesi-cell">~225g</div><div class="pesi-cell">—</div></div>
-    <div class="pesi-row"><div class="pesi-cell">Patate</div><div class="pesi-cell">300g</div><div class="pesi-cell">~280g</div><div class="pesi-cell">~255g</div></div>
-    <div class="pesi-row"><div class="pesi-cell">Patate</div><div class="pesi-cell">350g</div><div class="pesi-cell">~326g</div><div class="pesi-cell">~298g</div></div>
-    <div class="pesi-row"><div class="pesi-cell">Spinaci surgelati</div><div class="pesi-cell" colspan="3">Pesali surgelati — cambiano poco</div></div>
-    <div class="pesi-row"><div class="pesi-cell">Ceci (vasetto)</div><div class="pesi-cell" colspan="3">Sgocciolati — pesali così</div></div>
-    <div class="pesi-row"><div class="pesi-cell">Tonno</div><div class="pesi-cell" colspan="3">Scatoletta 160g netta sgocciolata</div></div>
+    <div class="pesi-row head">
+      <div class="pesi-cell">Alimento</div>
+      <div class="pesi-cell">Crudo</div>
+      <div class="pesi-cell">Cotto (media)</div>
+      <div class="pesi-cell">Molt. cotto→crudo</div>
+    </div>
+    <!-- CARNI -->
+    <div class="pesi-row"><div class="pesi-cell" colspan="4" style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--neon-purple);padding:6px 12px;background:rgba(180,79,255,0.05);">Carni e pesce</div></div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Petto di pollo</div>
+      <div class="pesi-cell">200g</div>
+      <div class="pesi-cell">~160g</div>
+      <div class="pesi-cell mult">×1.25</div>
+    </div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Tacchino fesa</div>
+      <div class="pesi-cell">200g</div>
+      <div class="pesi-cell">~165g</div>
+      <div class="pesi-cell mult">×1.21</div>
+    </div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Manzo magro</div>
+      <div class="pesi-cell">200g</div>
+      <div class="pesi-cell">~160g</div>
+      <div class="pesi-cell mult">×1.25</div>
+    </div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Salmone filetto</div>
+      <div class="pesi-cell">200g</div>
+      <div class="pesi-cell">~175g</div>
+      <div class="pesi-cell mult">×1.14</div>
+    </div>
+    <!-- CARBOIDRATI -->
+    <div class="pesi-row"><div class="pesi-cell" colspan="4" style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--neon-purple);padding:6px 12px;background:rgba(180,79,255,0.05);">Carboidrati</div></div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Riso basmati</div>
+      <div class="pesi-cell">80g</div>
+      <div class="pesi-cell">~200g</div>
+      <div class="pesi-cell mult">×0.40</div>
+    </div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Pasta (secca)</div>
+      <div class="pesi-cell">80g</div>
+      <div class="pesi-cell">~200g</div>
+      <div class="pesi-cell mult">×0.40</div>
+    </div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Avena (secca)</div>
+      <div class="pesi-cell">60g</div>
+      <div class="pesi-cell">~180g</div>
+      <div class="pesi-cell mult">×0.33</div>
+    </div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Patate</div>
+      <div class="pesi-cell">300g</div>
+      <div class="pesi-cell">~270g</div>
+      <div class="pesi-cell mult">×1.11</div>
+    </div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Patate dolci</div>
+      <div class="pesi-cell">200g</div>
+      <div class="pesi-cell">~175g</div>
+      <div class="pesi-cell mult">×1.14</div>
+    </div>
+    <!-- VERDURE -->
+    <div class="pesi-row"><div class="pesi-cell" colspan="4" style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--neon-purple);padding:6px 12px;background:rgba(180,79,255,0.05);">Verdure</div></div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Broccoli</div>
+      <div class="pesi-cell">200g</div>
+      <div class="pesi-cell">~175g</div>
+      <div class="pesi-cell mult">×1.14</div>
+    </div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Zucchine</div>
+      <div class="pesi-cell">200g</div>
+      <div class="pesi-cell">~185g</div>
+      <div class="pesi-cell mult">×1.08</div>
+    </div>
+    <div class="pesi-row">
+      <div class="pesi-cell">Lenticchie secche</div>
+      <div class="pesi-cell">60g</div>
+      <div class="pesi-cell">~150g</div>
+      <div class="pesi-cell mult">×0.40</div>
+    </div>
   </div>
+
   <p class="st">Alimenti speciali</p>
-  <div class="ibox ibox-g"><strong>Grana Padano:</strong> 10-15g sulla cena come aroma — non eliminarlo.</div>
-  <div class="ibox ibox-g"><strong>Burro d'arachidi:</strong> 10g con lo yogurt pomeridiano — grassi buoni + sazietà.</div>
-  <div class="ibox ibox-g"><strong>Cioccolato fondente 95%:</strong> 10-15g a fine cena — magnesio + polifenoli, pochissime kcal.</div>
-  <div class="ibox ibox-a"><strong>Rice pudding Lidl:</strong> ottimo spuntino pomeridiano nei giorni WO. Meno indicato la sera nei giorni riposo.</div>
+  <div class="ibox ibox-g"><strong>Grana Padano:</strong> 10–15g sulla cena come condimento — apporta 33g prot/100g, ottimo rapporto proteico per un condimento.</div>
+  <div class="ibox ibox-g"><strong>Burro d'arachidi naturale:</strong> 10–15g con yogurt o avena — grassi monoinsaturi + sazietà + palatabilità. Scegli versione senza zuccheri aggiunti.</div>
+  <div class="ibox ibox-g"><strong>Cioccolato fondente 85–95%:</strong> 10–15g a fine cena — flavonoidi con effetto antinfiammatorio (studi EFSA), magnesio, impatto glicemico basso.</div>
+  <div class="ibox ibox-a"><strong>Rice pudding Lidl:</strong> ottimo spuntino nei giorni WO — carbs facilmente digeribili, poca fibra, non appesantisce prima dell'allenamento serale.</div>
+  <div class="ibox ibox-b"><strong>Avena:</strong> 50–70g a colazione o pre-WO — beta-glucani (sazietà prolungata), indice glicemico basso, buona fonte di ferro. Ideale se vuoi sostituire la crema di riso.</div>
+  <div class="ibox ibox-b"><strong>Patate dolci:</strong> ottima alternativa alle patate — indice glicemico più basso, vitamina A (beta-carotene), ottima anche fredda nel batch cooking.</div>
+  <div class="ibox ibox-r"><strong>Salmone:</strong> 150–200g 2–3 volte/settimana — fonte primaria di EPA/DHA (omega-3), utili per recupero muscolare e sensibilità insulinica. Meglio atlantico selvaggio.</div>
 </div>
 
 <!-- ══════════════════════════════
@@ -1610,8 +1712,141 @@ function initMealEditPanels() {
 }
 
 // ═══════════════════════════════════════
-// SAVE / LOAD
+// PIANO PASTI — AGGIUNGI / ELIMINA PASTI
 // ═══════════════════════════════════════
+// Track which static meals have been deleted: { 'meal-lun-m1': true, ... }
+var deletedPianoMeals = JSON.parse(localStorage.getItem('deletedPianoMeals_v1') || '{}');
+// Track dynamically added meals: { 'lun': [{id, name, time, badge, badgeClass}], ... }
+var addedPianoMeals = JSON.parse(localStorage.getItem('addedPianoMeals_v1') || '{}');
+
+function deletePianoMeal(btn) {
+  const mealEl = btn.closest('.meal');
+  if (!mealEl) return;
+  const mealId = mealEl.id;
+  if (!confirm('Eliminare questo pasto?')) return;
+  deletedPianoMeals[mealId] = true;
+  localStorage.setItem('deletedPianoMeals_v1', JSON.stringify(deletedPianoMeals));
+  mealEl.remove();
+  calcAll();
+  triggerSave();
+}
+
+function applyDeletedPianoMeals() {
+  Object.keys(deletedPianoMeals).forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.remove();
+  });
+}
+
+var _pianoMealCounter = Date.now();
+function addPianoMeal(day) {
+  var id = 'dynamic-meal-' + day + '-' + (++_pianoMealCounter);
+  var mealId = 'new-meal-' + _pianoMealCounter;
+
+  // Build new meal DOM
+  var mealEl = document.createElement('div');
+  mealEl.className = 'meal';
+  mealEl.id = id;
+  mealEl.innerHTML = `
+    <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
+    <div class="meal-head" onclick="toggleMeal(this)">
+      <span class="meal-time" data-time="${mealId}">~00:00</span>
+      <span class="meal-name" data-section="${mealId}" ondblclick="renameMealSection(this)">Nuovo pasto</span>
+      <span class="badge bg-a" data-badge="${mealId}">opzionale</span>
+      <span class="meal-kcal" id="${mealId}-kcal">0 kcal</span>
+      <span class="arr">▶</span>
+    </div>
+    <div class="meal-body open">
+      <div class="ingr-list" data-meal="${mealId}" data-day="${day}"></div>
+      <div class="meal-macro-row" id="${mealId}-macros"><span>P: <strong>0g</strong></span><span>C: <strong>0g</strong></span><span>G: <strong>0g</strong></span></div>
+    </div>
+  `;
+
+  // Insert before the add-meal button
+  var dayEl = document.getElementById('day-' + day);
+  var addBtn = dayEl.querySelector('.btn-add-meal-piano');
+  dayEl.insertBefore(mealEl, addBtn);
+
+  // Wire up edit panel, meta events, name events for the new meal
+  var listEl = mealEl.querySelector('[data-meal]');
+  var mealBody = mealEl.querySelector('.meal-body');
+
+  var toggleBtn = document.createElement('button');
+  toggleBtn.className = 'meal-edit-toggle';
+  toggleBtn.textContent = '✎ modifica ingredienti';
+  var panelEl = document.createElement('div');
+  panelEl.className = 'meal-edit-panel';
+  panelEl.id = 'ep-' + mealId;
+  toggleBtn.onclick = function() {
+    var open = panelEl.classList.toggle('open');
+    if (open) renderEditPanel(mealId, listEl, panelEl);
+    toggleBtn.textContent = open ? '▲ chiudi modifica' : '✎ modifica ingredienti';
+  };
+  mealBody.appendChild(toggleBtn);
+  mealBody.appendChild(panelEl);
+
+  // Wire meta events for the new time/badge elements
+  initMealMetaEvents();
+  initMealNameEvents();
+
+  // Persist
+  if (!addedPianoMeals[day]) addedPianoMeals[day] = [];
+  addedPianoMeals[day].push({ id: id, mealId: mealId });
+  localStorage.setItem('addedPianoMeals_v1', JSON.stringify(addedPianoMeals));
+
+  calcAll();
+  triggerSave();
+}
+
+function restoreAddedPianoMeals() {
+  Object.entries(addedPianoMeals).forEach(function(pair) {
+    var day = pair[0], meals = pair[1];
+    meals.forEach(function(info) {
+      // Only restore if not subsequently deleted
+      if (deletedPianoMeals[info.id]) return;
+      var mealId = info.mealId;
+      var mealEl = document.createElement('div');
+      mealEl.className = 'meal';
+      mealEl.id = info.id;
+      mealEl.innerHTML = `
+        <button class="meal-del-btn" onclick="deletePianoMeal(this)" title="Elimina pasto">✕</button>
+        <div class="meal-head" onclick="toggleMeal(this)">
+          <span class="meal-time" data-time="${mealId}">~00:00</span>
+          <span class="meal-name" data-section="${mealId}" ondblclick="renameMealSection(this)">Nuovo pasto</span>
+          <span class="badge bg-a" data-badge="${mealId}">opzionale</span>
+          <span class="meal-kcal" id="${mealId}-kcal">0 kcal</span>
+          <span class="arr">▶</span>
+        </div>
+        <div class="meal-body">
+          <div class="ingr-list" data-meal="${mealId}" data-day="${day}"></div>
+          <div class="meal-macro-row" id="${mealId}-macros"><span>P: <strong>0g</strong></span><span>C: <strong>0g</strong></span><span>G: <strong>0g</strong></span></div>
+        </div>
+      `;
+      var dayEl = document.getElementById('day-' + day);
+      if (!dayEl) return;
+      var addBtn = dayEl.querySelector('.btn-add-meal-piano');
+      dayEl.insertBefore(mealEl, addBtn);
+
+      var listEl = mealEl.querySelector('[data-meal]');
+      var mealBody = mealEl.querySelector('.meal-body');
+      var toggleBtn = document.createElement('button');
+      toggleBtn.className = 'meal-edit-toggle';
+      toggleBtn.textContent = '✎ modifica ingredienti';
+      var panelEl = document.createElement('div');
+      panelEl.className = 'meal-edit-panel';
+      panelEl.id = 'ep-' + mealId;
+      toggleBtn.onclick = function() {
+        var open = panelEl.classList.toggle('open');
+        if (open) renderEditPanel(mealId, listEl, panelEl);
+        toggleBtn.textContent = open ? '▲ chiudi modifica' : '✎ modifica ingredienti';
+      };
+      mealBody.appendChild(toggleBtn);
+      mealBody.appendChild(panelEl);
+    });
+  });
+}
+
+
 let saveTimer;
 function triggerSave() {
   clearTimeout(saveTimer);
@@ -1654,14 +1889,14 @@ function saveAll() {
     data.macroTargets = macroTargets;
     data.dayTabLabels = dayTabLabels;
     data.mealMetaOverrides = mealMetaOverrides;
-    localStorage.setItem('piano_v5', JSON.stringify(data));
+    localStorage.setItem('piano_v6', JSON.stringify(data));
   } catch(e) {}
 }
 
 function loadAll() {
   try {
     // Try v5 first, then v4
-    const raw = localStorage.getItem('piano_v5') || localStorage.getItem('piano_v4');
+    const raw = localStorage.getItem('piano_v6') || localStorage.getItem('piano_v5');
     if (!raw) return;
     const data = JSON.parse(raw);
     // Ingredients — restore by food-key (robust, position-independent)
@@ -1674,7 +1909,16 @@ function loadAll() {
       if (v && typeof v === 'object' && !Array.isArray(v)) {
         list.querySelectorAll('.ingr').forEach(ingr => {
           const fk = ingr.dataset.food;
-          if (fk && v[fk] !== undefined) ingr.querySelector('.ingr-g').value = v[fk];
+          if (fk && v[fk] !== undefined) {
+            const parsed = parseFloat(v[fk]);
+            // Sanity check: reject obviously corrupt values
+            const inp = ingr.querySelector('.ingr-g');
+            const maxAllowed = parseFloat(inp.max) || 9999;
+            if (!isNaN(parsed) && parsed >= 0 && parsed <= maxAllowed) {
+              inp.value = parsed;
+            }
+            // If saved value exceeds max, keep the HTML default (don't apply corrupt data)
+          }
           if (fk && disabledKeys.includes(fk)) {
             const btn = ingr.querySelector('.ingr-toggle');
             ingr.classList.add('ingr-disabled');
@@ -1682,10 +1926,9 @@ function loadAll() {
             if (btn) btn.classList.remove('active');
           }
         });
-      } else if (Array.isArray(v)) {
-        const inputs = list.querySelectorAll('.ingr-g');
-        v.forEach((val, i) => { if (inputs[i]) inputs[i].value = val; });
       }
+      // NOTE: Array-based legacy fallback intentionally removed — it caused
+      // position-based value assignment which produced corrupt calorie totals.
     });
     // Checklist
     if (data.checklistChecked) { checklistChecked = data.checklistChecked; }
@@ -1718,7 +1961,9 @@ function loadAll() {
 // ═══════════════════════════════════════
 window.addEventListener('load', () => {
   renderFoodDB();
+  restoreAddedPianoMeals(); // restore dynamic meals before initMealEditPanels
   initMealEditPanels(); // MUST come before loadAll so extra inputs exist
+  applyDeletedPianoMeals(); // hide deleted static meals
   renderAllCheckDays(); // render checklist from data
   loadAll();
   applyMealSectionNames();
