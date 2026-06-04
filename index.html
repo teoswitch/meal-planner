@@ -248,9 +248,9 @@ body::before{
 
 /* ── PESI TABLE ── */
 .pesi-wrap{background:var(--bg2);border:1px solid var(--b1);border-radius:var(--rad);overflow:hidden;margin-bottom:16px;}
-.pesi-row{display:grid;grid-template-columns:140px 1fr 1fr 1fr;border-bottom:1px solid var(--b1);}
+.pesi-row{display:grid;grid-template-columns:130px 70px 80px 1fr;border-bottom:1px solid var(--b1);}
 .pesi-row:last-child{border-bottom:none;}
-.pesi-cell{padding:9px 12px;font-size:11px;color:var(--t2);}
+.pesi-cell{padding:9px 10px;font-size:11px;color:var(--t2);}
 .pesi-row.head .pesi-cell{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--b2);}
 .pesi-row:not(.head):hover .pesi-cell{background:var(--bg3);}
 .pesi-cell:first-child{color:var(--t1);}
@@ -266,8 +266,9 @@ body::before{
   .main{padding:16px;}
   .mstrip{grid-template-columns:repeat(2,1fr);}
   .prog-entry{grid-template-columns:90px 60px 55px 1fr 20px;}
-  .pesi-row{grid-template-columns:100px 1fr 1fr;}
-  .pesi-cell:last-child{display:none;}
+  .pesi-row{grid-template-columns:90px 55px 65px 1fr;}
+  .pesi-cell{padding:7px 6px;font-size:10px;}
+  .pesi-cell.mult{font-size:11px;}
   .add-ingr-row{grid-template-columns:1fr 60px 44px auto;}
   .custom-ingr-row{grid-template-columns:1fr 55px 36px 24px;}
   .ingr{grid-template-columns:1fr 52px 32px 24px;}
@@ -1635,7 +1636,7 @@ function initMealEditPanels() {
     if (listEl.dataset.day === undefined) return;
     if (!listEl.dataset.day) return;
 
-    // Add toggle buttons + fix cursor to existing static ingr rows
+    // Add toggle buttons to existing static ingr rows
     listEl.querySelectorAll('.ingr').forEach(ingr => {
       // Add toggle if not already present
       if (!ingr.querySelector('.ingr-toggle')) {
@@ -1645,18 +1646,6 @@ function initMealEditPanels() {
         btn.textContent = '●';
         btn.onclick = function() { toggleIngrActive(btn); };
         ingr.appendChild(btn);
-      }
-      // Fix cursor position: always go to end on focus
-      const inp = ingr.querySelector('.ingr-g');
-      if (inp) {
-        inp.addEventListener('focus', function() {
-          const val = this.value;
-          try {
-            this.type = 'text';
-            this.setSelectionRange(val.length, val.length);
-            this.type = 'number';
-          } catch(err) {}
-        });
       }
     });
 
@@ -1673,16 +1662,6 @@ function initMealEditPanels() {
         if (btn) btn.classList.remove('active');
       }
       listEl.appendChild(row);
-      // fix cursor for extra row too
-      const inp = row.querySelector('.ingr-g');
-      if (inp) inp.addEventListener('focus', function() {
-        const val = this.value;
-        try {
-          this.type = 'text';
-          this.setSelectionRange(val.length, val.length);
-          this.type = 'number';
-        } catch(err) {}
-      });
     });
 
     // Crea bottone toggle + pannello edit sotto la meal-body
@@ -1848,7 +1827,9 @@ function restoreAddedPianoMeals() {
 
 
 let saveTimer;
+let _isLoading = false; // guard: block saves during loadAll
 function triggerSave() {
+  if (_isLoading) return; // never save during initial load
   clearTimeout(saveTimer);
   const pill = document.getElementById('save-pill');
   if (pill) { pill.classList.remove('saved'); }
@@ -1894,6 +1875,7 @@ function saveAll() {
 }
 
 function loadAll() {
+  _isLoading = true;
   try {
     // Try v5 first, then v4
     const raw = localStorage.getItem('piano_v6') || localStorage.getItem('piano_v5');
@@ -1954,6 +1936,7 @@ function loadAll() {
     if (data.dayTabLabels) { dayTabLabels = data.dayTabLabels; }
     if (data.mealMetaOverrides) { mealMetaOverrides = data.mealMetaOverrides; }
   } catch(e) { console.error('loadAll', e); }
+  finally { _isLoading = false; }
 }
 
 // ═══════════════════════════════════════
@@ -2060,20 +2043,12 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// Global: move cursor to END when focusing any ingr-g input
-// type="number" doesn't support setSelectionRange → switch to text momentarily
+// Global: select-all when focusing any ingr-g input (safe, no type switching)
 document.addEventListener('focus', function(e) {
   if (e.target && e.target.classList && e.target.classList.contains('ingr-g')) {
-    const inp = e.target;
-    const val = inp.value;
-    try {
-      // Chrome/Edge: temporarily switch to text to allow cursor positioning
-      inp.type = 'text';
-      inp.setSelectionRange(val.length, val.length);
-      inp.type = 'number';
-    } catch(err) {
-      // Safari fallback: select-all then re-click to deselect at end — best effort
-    }
+    // Simple select-all — avoids the type='text' hack that triggered spurious
+    // 'change' events on mobile/Safari, corrupting saved values
+    e.target.select();
   }
 }, true);
 
