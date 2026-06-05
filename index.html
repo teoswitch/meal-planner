@@ -1631,6 +1631,22 @@ function removePianoIngr(listId, idx) {
 }
 
 function initMealEditPanels() {
+  // Cleanup: remove mealExtraIngr entries for meals that no longer exist in the DOM.
+  // This prevents stale data from old sessions polluting current meals.
+  const existingMealIds = new Set(
+    Array.from(document.querySelectorAll('[data-meal][data-day]')).map(el => el.dataset.meal)
+  );
+  let extrasChanged = false;
+  Object.keys(mealExtraIngr).forEach(function(listId) {
+    if (!existingMealIds.has(listId)) {
+      delete mealExtraIngr[listId];
+      extrasChanged = true;
+    }
+  });
+  if (extrasChanged) {
+    try { localStorage.setItem('mealExtraIngr_v1', JSON.stringify(mealExtraIngr)); } catch(e) {}
+  }
+
   document.querySelectorAll('[data-meal]').forEach(listEl => {
     const listId = listEl.dataset.meal;
     if (listEl.dataset.day === undefined) return;
@@ -1839,16 +1855,21 @@ function triggerSave() {
 function saveAll() {
   try {
     const data = {};
-    // Ingredient quantities per meal — saved by food-key (not position)
+    // Ingredient quantities per meal — saved by food-key with occurrence index
+    // to handle duplicate food keys in the same meal (e.g. two entries with data-food="fage")
     document.querySelectorAll('[data-meal]').forEach(list => {
       const key = list.dataset.meal;
       const ingrs = {};
       const disabled = [];
+      const foodCount = {}; // track how many times each food key appears
       list.querySelectorAll('.ingr').forEach(ingr => {
         const fk = ingr.dataset.food;
         if (fk) {
-          ingrs[fk] = ingr.querySelector('.ingr-g').value;
-          if (ingr.classList.contains('ingr-disabled')) disabled.push(fk);
+          // Build a unique save key: "fk" for first occurrence, "fk__2" for second, etc.
+          foodCount[fk] = (foodCount[fk] || 0) + 1;
+          const saveKey = foodCount[fk] === 1 ? fk : fk + '__' + foodCount[fk];
+          ingrs[saveKey] = ingr.querySelector('.ingr-g').value;
+          if (ingr.classList.contains('ingr-disabled')) disabled.push(saveKey);
         }
       });
       data['meal_'+key] = ingrs;
@@ -1889,10 +1910,16 @@ function loadAll() {
       if (!list) return;
       const disabledKeys = data['meal_disabled_' + mealKey] || [];
       if (v && typeof v === 'object' && !Array.isArray(v)) {
+        const foodCount = {}; // track occurrence index per food key, mirroring saveAll
         list.querySelectorAll('.ingr').forEach(ingr => {
           const fk = ingr.dataset.food;
-          if (fk && v[fk] !== undefined) {
-            const parsed = parseFloat(v[fk]);
+          if (!fk) return;
+          foodCount[fk] = (foodCount[fk] || 0) + 1;
+          const saveKey = foodCount[fk] === 1 ? fk : fk + '__' + foodCount[fk];
+          // Try position-aware key first, fall back to bare key for legacy saves
+          const savedVal = v[saveKey] !== undefined ? v[saveKey] : v[fk];
+          if (savedVal !== undefined) {
+            const parsed = parseFloat(savedVal);
             // Sanity check: reject obviously corrupt values
             const inp = ingr.querySelector('.ingr-g');
             const maxAllowed = parseFloat(inp.max) || 9999;
@@ -1901,7 +1928,7 @@ function loadAll() {
             }
             // If saved value exceeds max, keep the HTML default (don't apply corrupt data)
           }
-          if (fk && disabledKeys.includes(fk)) {
+          if (disabledKeys.includes(saveKey) || disabledKeys.includes(fk)) {
             const btn = ingr.querySelector('.ingr-toggle');
             ingr.classList.add('ingr-disabled');
             ingr.querySelector('.ingr-g').disabled = true;
@@ -1935,6 +1962,30 @@ function loadAll() {
     if (data.macroTargets) { macroTargets = data.macroTargets; }
     if (data.dayTabLabels) { dayTabLabels = data.dayTabLabels; }
     if (data.mealMetaOverrides) { mealMetaOverrides = data.mealMetaOverrides; }
+
+    // Sync mealExtraIngr with the actual DOM values restored above.
+    // This ensures extras loaded by initMealEditPanels always reflect
+    // the latest saved quantities from piano_v6, preventing stale values
+    // from a previous session leaking into the wrong meal.
+    document.querySelectorAll('[data-meal]').forEach(list => {
+      const listId = list.dataset.meal;
+      if (!list.dataset.day) return; // skip non-piano lists
+      const extras = [];
+      list.querySelectorAll('.ingr[data-extra="1"]').forEach(ingr => {
+        extras.push({
+          key: ingr.dataset.food,
+          name: ingr.querySelector('.ingr-name').textContent,
+          qty: ingr.querySelector('.ingr-g').value,
+          unit: ingr.querySelector('.ingr-unit').textContent.trim(),
+          disabled: ingr.classList.contains('ingr-disabled')
+        });
+      });
+      if (extras.length > 0) {
+        mealExtraIngr[listId] = extras;
+      }
+    });
+    // Persist the synced state so future sessions start clean
+    try { localStorage.setItem('mealExtraIngr_v1', JSON.stringify(mealExtraIngr)); } catch(e) {}
   } catch(e) { console.error('loadAll', e); }
   finally { _isLoading = false; }
 }
